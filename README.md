@@ -1,13 +1,24 @@
 # Welcome to the Golem Garden 
 
 
-# install: 
-- activate a `python3.6+` environment- 
-- `pip install -e .`
 # setup: 
 - make an `.env` file in outermost directory with `OPENAI_API_KEY = <your openai api key>` in it
-# run: 
-- `python -m golem_garden`
+
+# install: 
+- open a terminal
+- activate a `python3.6+` environment 
+- enter the repo directory by entering the command: 
+```bash
+cd golem_garden
+```
+- install as 'editable directory' by entering command:
+```bash
+pip install -e .
+```
+# run with by entering command: 
+```bash
+python -m golem_garden
+```
 
 
 # Everything else:
