@@ -6,6 +6,7 @@
 
 # install: 
 - open a terminal
+
 - activate a `python3.6+` environment
 - clone the repository: 
 ```bash
@@ -20,6 +21,7 @@ cd golem_garden
 pip install -e .
 ```
 - **run by entering comand: **
+
 ```bash
 python -m golem_garden
 ```
