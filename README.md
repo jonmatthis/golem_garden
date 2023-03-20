@@ -10,4 +10,4 @@
 
 
 # Everything else:
-ask the garden  
+ask the garden 🌱
