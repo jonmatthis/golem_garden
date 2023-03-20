@@ -23,6 +23,7 @@ class Golem:
         self.context_database = context_database
         openai.api_key = api_key
         self.golem_string = golem_string
+        self.system_dict = {'role': 'system', 'content': self.golem_string}
         self.temperature = temperature
         self.max_tokens = max_tokens
 
@@ -30,7 +31,8 @@ class Golem:
         self.context_database.add_message(golem_name=self.name,
                                           role='user',
                                           content=input_message)
-        messages = [{'role': 'system', 'content': self.golem_string}] + self.context_database.get_chat_history(self.name)
+        history = self.context_database.get_chat_history(self.name)
+        messages = [self.system_dict]+history
         return messages
 
     async def return_response(self, messages: List[dict]) -> str:
@@ -48,12 +50,19 @@ class Golem:
         return response
 
     async def process_message(self, input_message) -> str:
+        self._update_chat_history(input_message)
         input_payload = self._prepare_input(input_message = input_message)
         response_message = await self.return_response(input_payload)
         self.context_database.add_message(golem_name=self.name,
                                           role='assistant',
                                           content=response_message)
         return response_message
+
+    def _update_chat_history(self, input_message: str):
+        self.context_database.add_message(golem_name=self.name,
+                                            role='user',
+                                            content=input_message)
+
 
 
 #

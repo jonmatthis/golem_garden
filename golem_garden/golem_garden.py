@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from golem_garden.context_database import ContextDatabase
 from golem_garden.golem_factory import GolemFactory
 
@@ -13,13 +15,17 @@ class GolemGarden:
         self._expert_golems = {golem.name: golem for golem in self._golems.values() if golem.type == "sub"}
 
     @property
-    def golems(self):
+    def golems(self) -> List[Dict[str, str]]:
         return self._golems
 
-
-    def history(self):
-        return self._context_database.database
-
+    def history(self, user_id: str = None):
+        if user_id is None:
+            return self._context_database.database
+        else:
+            return self._context_database.database[user_id]
 
     async def process_input(self, user_input):
         return await self._greeter_golem.process_message(user_input)
+
+    def set_user_id(self, user_id):
+        self._context_database.user_id = user_id
