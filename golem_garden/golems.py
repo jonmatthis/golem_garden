@@ -15,7 +15,7 @@ class Golem:
                  golem_string: str = "You are a friendly Golem. We are so glad you're here",
                  model_name: str = "gpt-3.5-turbo",
                  temperature: float = 0.5,
-                 max_tokens: int = 150
+                 max_tokens: int = 500
                  ):
         self.name = name
         self.type = type
