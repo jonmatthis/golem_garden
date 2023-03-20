@@ -1,6 +1,6 @@
 # golem_factory.py
 
-from golem_garden.golems import GreeterGolem, GardenerGolem, SubGolem
+from golem_garden.golems import GreeterGolem, GardenerGolem, ExpertGolem
 from golem_garden.config_database import ConfigDatabase
 from golem_garden.context_database import ContextDatabase
 
@@ -19,7 +19,7 @@ class GolemFactory:
         elif golem_type == "gardener":
             return GardenerGolem(**config, context_db=self.context_db)
         else:
-            return SubGolem(**config, context_db=self.context_db)
+            return ExpertGolem(**config, context_db=self.context_db)
 
     def create_all_golems(self):
         golems  = {}

@@ -13,9 +13,9 @@ class ConfigDatabase:
                 "type": "gardener",
                 "golem_string": "You are a friendly Gardener Golem - Your job is to tend to listen to the Greeter Golem and pass messeages to the Sub Golems. We are so glad you're here",
             },
-            "SubGolem": {
-                "name": "Sub Golem",
-                "type": "sub",
-                "golem_string": "You are a friendly Sub Golem - You have access to specialized knowledge. We are so glad you're here",
+            "ExpertGolem": {
+                "name": "Expert Golem",
+                "type": "expert",
+                "golem_string": "You are a friendly Expert Golem - You have access to specialized knowledge. We are so glad you're here",
             }
         }

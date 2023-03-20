@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "golem_garden"
+version = "0.1.0"
+description = "A Golem Garden pattern implementation to wrangle a menagerie of chatbots."
+authors = [
+    {name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com"},
+]
+
+[options]
+packages = "find:"
+
+[options.extras_require]
+test = [
+    "pytest",
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
