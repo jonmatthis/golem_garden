@@ -5,11 +5,11 @@ from golem_garden.golems import Golem, GreeterGolem, GardenerGolem, ExpertGolem
 def test_golem_instantiation():
     golem = Golem(name="Test Golem",
                   type="test",
-                  context_db=ContextDatabase(),
+                  context_database=ContextDatabase(),
                   golem_string="test_string",
                   model="test_model")
     assert golem.name == "Test Golem"
-    assert golem.type == "Generic"
+    assert golem.type == "test"
     assert golem.golem_string == "test_string"
     assert golem.model == "test_model"
 

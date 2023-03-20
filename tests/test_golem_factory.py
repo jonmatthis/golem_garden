@@ -8,7 +8,7 @@ from golem_garden.golems import GreeterGolem, GardenerGolem, ExpertGolem
 
 class TestGolemFactory(unittest.TestCase):
     def setUp(self):
-        self.golem_factory = GolemFactory(context_db=ContextDatabase())
+        self.golem_factory = GolemFactory(context_database=ContextDatabase())
 
     def test_create_golem(self):
         greeter_golem = self.golem_factory.create_golem("GreeterGolem")

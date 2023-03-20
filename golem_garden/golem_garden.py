@@ -16,10 +16,10 @@ class GolemGarden:
     def golems(self):
         return self._golems
 
-    @property
-    def chat_history(self):
-        return self._context_database.load_context("chat_history")
+
+    def history(self):
+        return self._context_database.database
 
 
-    def process_input(self, user_input):
-        return self._greeter_golem.process_message(user_input)
+    async def process_input(self, user_input):
+        return await self._greeter_golem.process_message(user_input)

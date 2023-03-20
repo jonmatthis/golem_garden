@@ -10,16 +10,17 @@ class UserInterface:
         self._golem_garden = golem_garden
         self._console = Console()
 
-    def run(self):
+    async def run(self):
 
         self._console.rule("[magenta]")
-        self._console.rule("[magenta] Welcome to the Golem Garden \U0001F331 [/magenta]")
+        self._console.rule("[magenta] Welcome to the Golem Garden \U0001F5FF \U0001F331 [/magenta]")
 
 
         while True:
             self._console.rule("[green]")
-            user_input = Prompt.ask("[bold green] Enter your input [/bold green] (type 'EXIT' to quit, 'SHOW_GOLEMS' to display golems, or 'SHOW_HISTORY' to display history):", console=self.console)
+            user_input = Prompt.ask("[bold green] Enter your input [/bold green] (type 'EXIT' to quit, 'SHOW_GOLEMS' to display golems, or 'SHOW_HISTORY' to display history):", console=self._console)
             self._console.rule("[green]")
+
             if user_input == "EXIT":
                 break
             elif user_input == "SHOW_TABLE":
@@ -28,11 +29,12 @@ class UserInterface:
                 self.print_chat_history()
             else:
                 # Process the user input and get the bot's response
-                bot_response = self._golem_garden.process_input(user_input)
+                with self._console.status("[bold blue] Awaiting Greeter Golem response..."):
+                    bot_response = await self._golem_garden.process_input(user_input)
 
                 # Print the bot's response using Rich formatting
                 self._console.rule("[blue]")
-                self._console.print(f"[bold blue]Greeter:[/bold blue] {bot_response}")
+                self._console.print(f"[bold][cyan]Greeter Golem:[/bold] {bot_response}")
                 self._console.rule("[blue]")
 
     def print_golem_table(self):
@@ -61,7 +63,7 @@ class UserInterface:
         table.add_column("Received", justify="left", style="green")
 
         # Add chat messages to the table
-        for message in self._golem_garden.chat_history:
+        for message in self._golem_garden.history:
             table.add_row(
                 str(message['id']),
                 message['sent'],
