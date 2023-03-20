@@ -6,20 +6,25 @@
 
 # install: 
 - open a terminal
-- activate a `python3.6+` environment 
-- enter the repo directory by entering the command: 
+
+- activate a `python3.6+` environment
+- clone the repository: 
+```bash
+git clone https://github.com/jonmatthis/golem_garden
+```
+- enter the directory:
 ```bash
 cd golem_garden
 ```
-- install as 'editable directory' by entering command:
+- install as editable package:
 ```bash
 pip install -e .
 ```
-# run with by entering command: 
+- **run by entering comand: **
+
 ```bash
 python -m golem_garden
 ```
 
 
-# Everything else:
-ask the garden 🌱
+# Everything else - ask the garden 🌱
