@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 repo_path = Path(__file__).parent.parent.parent
-exclude_dirs = ['__pycache__', 'venv', 'build', 'dist', 'golem_garden.egg-info']
+exclude_dirs = ['__pycache__', 'venv', 'build', 'dist', 'golem_garden.egg-info', 'tests', "system", "utlities", "notes"]
 output = []
 for root, dirs, files in os.walk(repo_path):
     dirs[:] = [d for d in dirs if d not in exclude_dirs]

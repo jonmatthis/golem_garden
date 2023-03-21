@@ -7,16 +7,18 @@ name = "golem_garden"
 version = "0.1.0"
 description = "A Golem Garden pattern implementation to wrangle a menagerie of chatbots."
 authors = [
-    {name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com"},
+    { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
 ]
 license = { file = "LICENSE" }
 [options]
 packages = "find:"
 
 dependencies = [
-"rich",
-"python-dotenv",
-"openai",
+    "rich",
+    "python-dotenv",
+    "openai",
+    "qtconsole",
+    "pyqtgraph",
 ]
 
 dynamic = ["version", "description"]
@@ -31,13 +33,13 @@ Homepage = "https://github.com/jonmatthis/golem_garden"
 current_version = "v0.1.1"
 
 version_pattern = "vMAJOR.MINOR.PATCH[-TAG]"
-commit_message  = "Bump version {old_version} -> {new_version}"
-commit          = true
-tag             = true
-push            = true
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
 
 [tool.poetry.dependencies]
 python = "^3.6"
 
 [project.scripts]
-skellycam = "golem_garden.main:main"
+golem_garden = "golem_garden.__main__:main"

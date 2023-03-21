@@ -69,7 +69,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+notes/_build/
 
 # PyBuilder
 target/
@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 .idea
 .vscode
-notes/
+notes/*
