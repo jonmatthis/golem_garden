@@ -24,8 +24,14 @@ class GolemGarden:
         else:
             return self._context_database.database[user_id]
 
-    async def process_input(self, user_input):
-        return await self._greeter_golem.process_message(user_input)
+    async def process_input(self, user_input, selected_golem=None):
+        if selected_golem is None:
+            return await self._greeter_golem.process_message(user_input)
+        else:
+            try:
+                return await self._expert_golems[selected_golem].process_message(user_input)
+            except KeyError:
+                return await self._gardener_golem.process_message(user_input)
 
     def set_user_id(self, user_id):
         self._context_database.user_id = user_id

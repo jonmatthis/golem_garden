@@ -65,40 +65,6 @@ class Golem:
 
 
 
-#
-# class Golem:
-#     def __init__(self,
-#                  name: str,
-#                  type: str,
-#                  context_database: ContextDatabase,
-#                  golem_string: str = "You are a friendly Golem. We are so glad you're here",
-#                  model: str = "gpt-3.5-turbo"):
-#         self.name = name
-#         self.type = type
-#         self.model = model
-#         self.golem_string = golem_string
-#         self.context_database = context_database
-#         self.api_client = OpenAIAPIClient(api_key = OPENAI_API_KEY)
-#         self.chat_history = []
-#
-#     def _prepare_input(self, message: str) -> str:
-#         # Prepare the input message for the model
-#         self.add_message_to_history('user', message)
-#         messages = [{'role': 'system', 'content': self.golem_string}] + self.chat_history
-#         # TODO: Add context to the input message, etc etc
-#         return messages
-#
-#     async def process_message(self, input_message) -> str:
-#         # Process the message and return the response payload
-#         input_payload = self._prepare_input(input_message)
-#         response_message = await self.return_response(input_payload)
-#         return response_message
-#
-#     async def return_response(self, input_payload: str) -> str:
-#         # Send the response payload to the appropriate recipient
-#         response_message = await self.api_client.query(input_payload)
-#         return f"Hello, my name is {self.name} - I heard you say: {input_payload} - here is my response: {response_message}"
-#
 
 class GreeterGolem(Golem):
     def __init__(self, *args, **kwargs):
