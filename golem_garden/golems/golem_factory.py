@@ -3,9 +3,9 @@ import os
 
 from dotenv import load_dotenv
 
-from golem_garden.config_database import ConfigDatabase
+from golem_garden.golems.config_database import ConfigDatabase
 from golem_garden.context_database import ContextDatabase
-from golem_garden.golems import GreeterGolem, GardenerGolem, ExpertGolem
+from golem_garden.golems.golems import GreeterGolem, GardenerGolem, Golem
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -26,7 +26,7 @@ class GolemFactory:
         elif golem_type == "gardener":
             return GardenerGolem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
         else:
-            return ExpertGolem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
+            return Golem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
 
     def create_all_golems(self):
         golems = {}

@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.prompt import Prompt
 from rich.tree import Tree
 
-from golem_garden.golem_garden import GolemGarden
+from golem_garden.golems.golem_garden import GolemGarden
 from golem_garden.system.get_formatted_timestamp import get_formatted_timestamp
 
 

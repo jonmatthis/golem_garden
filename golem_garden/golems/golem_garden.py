@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from golem_garden.context_database import ContextDatabase
-from golem_garden.golem_factory import GolemFactory
+from golem_garden.golems.golem_factory import GolemFactory
 
 
 class GolemGarden:

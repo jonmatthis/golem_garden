@@ -82,9 +82,4 @@ class GardenerGolem(Golem):
         super().__init__(*args, **kwargs)
 
 
-class ExpertGolem(Golem):
-    def __init__(self, *args, **kwargs):
-        if "type" in kwargs:
-            if kwargs["type"] != "expert":
-                raise ValueError("ExpertGolem must have type 'expert'")
-        super().__init__(*args, **kwargs)
+
