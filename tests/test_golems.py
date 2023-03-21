@@ -1,5 +1,5 @@
 from golem_garden.context_database import ContextDatabase
-from golem_garden.golems.golems import Golem, GreeterGolem, GardenerGolem, ExpertGolem
+from golem_garden.golems.golem import Golem, GreeterGolem, GardenerGolem, ExpertGolem
 
 
 def test_golem_instantiation():

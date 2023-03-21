@@ -1,4 +1,5 @@
 import json
+import time
 import uuid
 from pathlib import Path
 
@@ -6,8 +7,7 @@ from rich.console import Console
 from rich.prompt import Prompt
 from rich.tree import Tree
 
-from golem_garden.golems.golem_garden import GolemGarden
-from golem_garden.system.get_formatted_timestamp import get_formatted_timestamp
+from golem_garden.golem_garden import GolemGarden
 
 
 class UserInterface:
@@ -18,9 +18,10 @@ class UserInterface:
         self._console = Console()
         self._selected_golem = None
 
+
     async def run(self):
         self._display_welcome_message()
-        self._session_timestamp = get_formatted_timestamp()
+        self._session_timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         await self._welcome_user()
 
         while True:

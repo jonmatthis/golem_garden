@@ -4,7 +4,7 @@ import unittest
 
 from golem_garden.context_database import ContextDatabase
 from golem_garden.golems.golem_factory import GolemFactory
-from golem_garden.golems.golems import GreeterGolem, GardenerGolem, ExpertGolem
+from golem_garden.golems.golem import GreeterGolem, GardenerGolem, ExpertGolem
 
 class TestGolemFactory(unittest.TestCase):
     def setUp(self):

@@ -1,6 +1,6 @@
 from golem_garden.context_database import ContextDatabase
 from golem_garden.golems.config_database import ConfigDatabase
-from golem_garden.golems.golems import Golem
+from golem_garden.golems.golem import Golem
 
 
 class GolemFactory:
