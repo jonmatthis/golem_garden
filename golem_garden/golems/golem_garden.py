@@ -15,7 +15,7 @@ class GolemGarden:
         self._expert_golems = {golem.name: golem for golem in self._golems.values() if golem.type == "sub"}
 
     @property
-    def golems(self) -> List[Dict[str, str]]:
+    def golems(self) -> Dict[str, str]:
         return self._golems
 
     def history(self, user_id: str = None):

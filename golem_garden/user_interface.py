@@ -81,9 +81,9 @@ class UserInterface:
         user_dict["user_name"] = Prompt.ask(f"I don't believe we've met before! What should I call you?")
         user_dict["user_id"] = str(uuid.uuid4())
         self._console.print(
-        f"Nice to meet you, {user_dict['user_name']}! I will remember you with the ID: {user_dict['user_id']} in a file at: {user_id_full_path}")
+            f"Nice to meet you, {user_dict['user_name']}! I will remember you with the ID: {user_dict['user_id']} in a file at: {user_id_full_path}")
         user_dict["user_description"] = Prompt.ask(f"Tell me a little about yourself, if you like!:",
-        default="a nice person")
+                                                   default="a nice person")
         with open(str(user_id_full_path), 'w') as f:
             json.dump(user_dict, f)
         return user_dict

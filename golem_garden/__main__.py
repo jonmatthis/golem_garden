@@ -24,4 +24,4 @@ def main():
 if __name__ == '__main__':
     print("Starting Golem Garden...")
     main()
-    print("Thanks for visiting the Golem Garden \U0001F331 \U0001F4F8")
+    print("Thanks for visiting the Golem Garden \U0001F331 \U00002728")
