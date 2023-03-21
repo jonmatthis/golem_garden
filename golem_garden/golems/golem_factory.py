@@ -1,34 +1,23 @@
-# golem_factory.py
-import os
-
-from dotenv import load_dotenv
-
-from golem_garden.golems.config_database import ConfigDatabase
 from golem_garden.context_database import ContextDatabase
-from golem_garden.golems.golems import GreeterGolem, GardenerGolem, Golem
-
-load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+from golem_garden.golems.config_database import ConfigDatabase
+from golem_garden.golems.golems import Golem
 
 
 class GolemFactory:
+    """Factory class for creating Golem instances."""
+
     def __init__(self, context_database: ContextDatabase):
         self.config_database = ConfigDatabase()
         self.context_database = context_database
 
     def create_golem(self, golem_name):
+        f"""Create a Golem instance by grabbing the configuration from: {golem_name}.toml"""
+
         config = self.config_database.golem_configs[golem_name]
-
-        golem_type = config["type"]
-
-        if golem_type == "greeter":
-            return GreeterGolem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
-        elif golem_type == "gardener":
-            return GardenerGolem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
-        else:
-            return Golem(**config, context_database=self.context_database, api_key=OPENAI_API_KEY)
+        return Golem(**config, context_database=self.context_database)
 
     def create_all_golems(self):
+        """Create instances of all available Golems."""
         golems = {}
         for name in self.config_database.golem_configs.keys():
             golems[name] = self.create_golem(name)

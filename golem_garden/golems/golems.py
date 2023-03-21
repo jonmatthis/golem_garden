@@ -1,7 +1,12 @@
 import asyncio
+import os
 from typing import List
 
 import openai
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 from golem_garden.context_database import ContextDatabase
 
@@ -11,7 +16,6 @@ class Golem:
                  name: str,
                  type: str,
                  context_database: ContextDatabase,
-                 api_key: str,
                  golem_string: str = "You are a friendly Golem. We are so glad you're here",
                  model_name: str = "gpt-3.5-turbo",
                  temperature: float = 0.5,
@@ -21,13 +25,13 @@ class Golem:
         self.type = type
         self.model_name = model_name
         self.context_database = context_database
-        openai.api_key = api_key
         self.golem_string = golem_string
         self.system_dict = {'role': 'system', 'content': self.golem_string}
         self.temperature = temperature
         self.max_tokens = max_tokens
 
     def _prepare_input(self,  input_message: str) -> List[dict]:
+        #TODO - pre and post pend instructions to the Golem regarding the formatting of the output
         self.context_database.add_message(golem_name=self.name,
                                           role='user',
                                           content=input_message)
@@ -62,24 +66,4 @@ class Golem:
         self.context_database.add_message(golem_name=self.name,
                                             role='user',
                                             content=input_message)
-
-
-
-
-class GreeterGolem(Golem):
-    def __init__(self, *args, **kwargs):
-        if "type" in kwargs:
-            if kwargs["type"] != "greeter":
-                raise ValueError("GreeterGolem must have type 'greeter'")
-        super().__init__(*args, **kwargs)
-
-
-class GardenerGolem(Golem):
-    def __init__(self, *args, **kwargs):
-        if "type" in kwargs:
-            if kwargs["type"] != "gardener":
-                raise ValueError("GardenerGolem must have type 'gardener'")
-        super().__init__(*args, **kwargs)
-
-
 
