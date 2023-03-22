@@ -1,7 +1,4 @@
-import json
 import time
-import uuid
-from pathlib import Path
 
 from rich.console import Console
 from rich.prompt import Prompt
@@ -11,47 +8,69 @@ from golem_garden.golem_garden import GolemGarden
 
 
 class UserInterface:
-    OPTIONS = ["EXIT", "SHOW_GOLEMS", "SELECT_GOLEM", "SHOW_HISTORY"]
+    OPTIONS = ["EXIT",
+               "OPTIONS",
+               "SHOW_GOLEMS",
+               "SELECT_GOLEM",
+               "SHOW_ALL_HISTORY",
+               "SHOW_USER_HISTORY",
+               "SHOW_GOLEM_HISTORY",
+               "SHOW_USER_GOLEM_HISTORY",
+               "POKE"
+               ]
 
     def __init__(self, golem_garden: GolemGarden):
         self._golem_garden = golem_garden
         self._console = Console()
-        self._selected_golem = None
-
+        self._selected_golem = 'GreeterGolem'
 
     async def run(self):
         self._display_welcome_message()
         self._session_timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        await self._welcome_user()
+
+        self._print_golem_message(await self._golem_garden.welcome_user())
 
         while True:
             self._console.rule("[green]\U0001F331")
-            user_input = Prompt.ask("[bold green] Enter your input [/bold green]:", console=self._console)
+            user_input = Prompt.ask("[bold green] Enter your input (or OPTIONS)[/bold green]:", console=self._console)
 
             if user_input == "EXIT":
                 break
+            elif user_input == "OPTIONS":
+                self._console.print(f"Type any of the following options: {', '.join(self.OPTIONS)}")
             elif user_input == "SHOW_GOLEMS":
                 self._print_golem_table()
             elif user_input == "SELECT_GOLEM":
-                self._selected_golem = self._select_golem()
-            elif user_input == "SHOW_HISTORY":
+                self._selected_golem = self._golem_garden.select_golem()
+                await self._poke_golem(golem=self._selected_golem, waking_up=True)
+            elif user_input == "POKE":
+                self._console.print(f"You poke {self._selected_golem}")
+                await self._poke_golem(self._selected_golem)
+            elif user_input == "SHOW_ALL_HISTORY":
                 self._print_chat_history()
+            elif user_input == "SHOW_USER_HISTORY":
+                self._print_chat_history(user=self._golem_garden.get_user_id())
+            elif user_input == "SHOW_GOLEM_HISTORY":
+                self._print_chat_history(user=None, golem=self._selected_golem)
+            elif user_input == "SHOW_USER_GOLEM_HISTORY":
+                self._print_chat_history(user=self._golem_garden.get_user_id(), golem=self._selected_golem)
             else:
                 await self._send_message_to_garden(user_input)
 
     def _display_welcome_message(self):
         self._console.rule("[magenta] \U0001F331 [/magenta]")
         self._console.rule("[magenta] Welcome to the Golem Garden! [/magenta]")
-        self._console.rule("[magenta] We are so glad you're here [/magenta]")
         self._console.rule("[magenta] \U0001F331 [/magenta]")
         self._console.print(
             f"Type any of the following options: {', '.join(self.OPTIONS)}", soft_wrap=True)
 
-    async def _send_message_to_garden(self, user_input):
-        golem_response = await self._golem_garden.process_input(user_input, self._selected_golem)
+    async def _send_message_to_garden(self, message: str):
+        self._print_golem_message(await self._golem_garden.pass_message_to_golem(message=message,
+                                                                                 golem_name=self._selected_golem))
+
+    def _print_golem_message(self, golem_response: str):
         self._console.rule("[blue]\U0001F331")
-        golem_name = self._selected_golem if self._selected_golem else "Greeter Golem"
-        self._console.print(f"[bold][cyan]{golem_name}:[/bold] {golem_response}")
+        self._console.print(f"[bold cyan]{self._selected_golem}:[/bold cyan] {golem_response}")
 
     def _print_golem_table(self):
         tree = Tree("Golem Garden", style="bold blue")
@@ -59,46 +78,10 @@ class UserInterface:
             tree.add(f"{name}").add(f"Golem Type: ({golem.type})").add(f"Golem Description: ({golem.golem_string})")
         self._console.print(tree)
 
-    def _print_chat_history(self):
+    def _print_chat_history(self, user=None, golem=None):
         self._console.rule("[blue]\U0001F331")
         self._console.print("[bold blue] Context History [/bold blue]")
-        self._console.print_json(self._golem_garden.history())
+        self._console.print_json(self._golem_garden.history(user_id=user, golem_name=golem))
 
-    def _get_user_id(self):
-        user_id_path = "user_id.json"
-        user_id_full_path = Path(user_id_path).resolve()
-        if user_id_full_path.exists():
-            with open(str(user_id_full_path), 'r') as f:
-                user_dict = json.load(f)
-        else:
-            user_dict = self._create_new_user(user_id_full_path)
-
-        self._user_id = user_dict["user_id"]
-        self._user_name = user_dict["user_name"]
-        self._user_description = user_dict["user_description"]
-
-    def _create_new_user(self, user_id_full_path):
-        user_dict = {}
-        user_dict["user_name"] = Prompt.ask(f"I don't believe we've met before! What should I call you?")
-        user_dict["user_id"] = str(uuid.uuid4())
-        self._console.print(
-            f"Nice to meet you, {user_dict['user_name']}! I will remember you with the ID: {user_dict['user_id']} in a file at: {user_id_full_path}")
-        user_dict["user_description"] = Prompt.ask(f"Tell me a little about yourself, if you like!:",
-                                                   default="a nice person")
-        with open(str(user_id_full_path), 'w') as f:
-            json.dump(user_dict, f)
-        return user_dict
-
-    def _select_golem(self):
-        golem_names = list(self._golem_garden.golems.keys())
-        selected_golem = Prompt.ask("Select a golem to talk to:", choices=golem_names)
-        return selected_golem
-
-    async def _welcome_user(self):
-        self._get_user_id()
-
-        self._new_user = self._golem_garden.set_user_id(self._user_id)
-
-        welcome_prompt = f"A human user that calls themselvses '{self._user_name}' just approached the Golem Garden Gate. They describe themselves as {self._user_description}. You are excited to see them! Greet them kindly and ask how you may help. "
-
-        await self._send_message_to_garden(welcome_prompt)
+    async def _poke_golem(self, golem: str, waking_up: bool = False):
+        self._print_golem_message(await self._golem_garden.poke_golem(golem, waking_up=waking_up))

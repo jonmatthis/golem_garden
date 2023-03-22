@@ -1,19 +1,16 @@
 import json
-import threading
-from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Union
+
+from pymongo import MongoClient
 
 
 class ContextDatabase:
-    def __init__(self, database_path: str = "user/context_database.json", user_id: str = "UnknownUser"):
-        self._database = {}
-        self.lock = threading.Lock()
-        self.database_path = database_path
+    def __init__(self, database_name: str = "golem_garden", collection_name: str = "conversations",
+                 user_id: str = "UnknownUser"):
+        self.client = MongoClient()
+        self.db = self.client[database_name]
+        self.conversations_collection = self.db[collection_name]
         self.user_id = user_id
-
-    @property
-    def database(self):
-        return self._database
 
     @property
     def user_id(self):
@@ -22,38 +19,52 @@ class ContextDatabase:
     @user_id.setter
     def user_id(self, user_id):
         self._user_id = user_id
-        if user_id not in self._database:
-            self._database[user_id] = {}
 
     def add_message(self, golem_name: str, role: str, content: str):
-        with self.lock:
-            if golem_name not in self._database:
-                self._database[self._user_id][golem_name] = []
-            self._database[self._user_id][golem_name].append({'role': role, 'content': content})
-            self._save_to_file()
+        conversation = {
+            "user_id": self._user_id,
+            "golem_id": golem_name,
+            "role": role,
+            "content": content
+        }
+        self.conversations_collection.insert_one(conversation)
 
-    def get_chat_history(self, golem_id: str) -> List[Dict[str, str]]:
-        with self.lock:
-            return self._database[self._user_id].get(golem_id, [])
+    def get_history(self, query: dict = None, ) -> List[Dict[str, str]]:
+        """Get chat history for a given query. If no query is provided, return all chat history."""
 
-    def _save_to_file(self):
-        self._create_parent_directory_if_not_exists()
-        with open(self.database_path, 'w') as f:
-            json.dump(self._database, f, indent=4)
+        include_fields = {"role": 1, "content": 1, "_id": 0}
 
-    def _create_parent_directory_if_not_exists(self):
-        Path(self.database_path).parent.mkdir(parents=True, exist_ok=True)
+        if query is None:
+            query = {}
 
-    def load_from_file(self):
-        try:
-            with open(self.database_path, 'r') as f:
-                self._database = json.load(f)
-        except FileNotFoundError:
-            pass
+        # Add aggregation stages
+        pipeline = [
+            {"$match": query}, # Filter by query
+            {"$group": {
+                "_id": {"content": "$content", "role": "$role"}, # Group by content and role
+                "doc": {"$first": "$$ROOT"} # Get the first document in the group (i.e. remove duplicates)
+            }},
+            {"$replaceRoot": {"newRoot": "$doc"}}, # Replace the root with the first document in the group
+            {"$project": include_fields} # Only include the fields specified in include_fields
+        ]
+
+        history = list(self.conversations_collection.aggregate(pipeline))
+        return history
 
     def as_json(self):
-        with self.lock:
-            return json.dumps(self._database, indent=4)
+        conversations = list(self.conversations_collection.find({"user_id": self._user_id}))
+        return json.dumps(conversations, indent=4, default=str)
 
     def print(self):
         print(self.as_json())
+
+
+if __name__ == "__main__":
+    db = ContextDatabase(user_id="John")
+    db.add_message("Golem1", "user", "Hello, Golem1!")
+    db.add_message("Golem1", "golem", "Hello, John!")
+    db.add_message("Golem2", "user", "Hello, Golem2!")
+    db.add_message("Golem2", "golem", "Hello, John!")
+    db.print()
+    print("Chat history with Golem1:")
+    print(db.get_history("Golem1"))

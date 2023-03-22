@@ -21,29 +21,22 @@ Golem Garden is a Python project that manages a collection of GPT-enabled chatbo
 
 # Installation
 
-To install Golem Garden, follow these steps:
+To install the golem_garden package using Poetry, follow these steps:
 
-0. Create a `.env` file in the outer package folder and put your API key in it:
+1. [Install Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
 
-   ```bash
-   OPENAI_API_KEY= <your API key> #get it from your profile on `https://platform.openai.com` 
-   ```
-
-1. Install Python 3.8+ from the [official website](https://www.python.org/downloads/).
-
-2. Clone the Golem Garden repository:
-
-   ```bash
-   git clone https://github.com/username/golem_garden.git
-
-3. Install the package:
+2. Clone the `golem_garden` repository:
 
 ```bash
-    pip install -e . 
+   git clone https://github.com/jonmatthis/golem_garden.git
+   cd golem_garden
 ```
-### Run the program:
+3. Install the project dependencies and create a virtual environment:
 ```bash
-    python -m golem_garden
+  poetry install
+```
+4. Activate the virtual environment:
+```bash 
+poetry shell
 ```
 
-6. Enjoy!
