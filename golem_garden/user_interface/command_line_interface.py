@@ -7,7 +7,7 @@ from rich.tree import Tree
 from golem_garden.golem_garden import GolemGarden
 
 
-class UserInterface:
+class CommandLineInterface:
     OPTIONS = ["EXIT",
                "OPTIONS",
                "SHOW_GOLEMS",

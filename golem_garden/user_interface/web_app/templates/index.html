@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golem Garden</title>
+</head>
+<body>
+    <h1>Golem Garden</h1>
+    <div id="chatbox">
+        <!-- Chat messages will be added here -->
+    </div>
+    <form id="chat-form">
+        <input type="text" id="message" placeholder="Enter your message" required />
+        <input type="text" id="user_name" placeholder="Enter your name" required />
+        <input type="text" id="user_description" placeholder="Enter a description of yourself" required />
+        <input type="submit" value="Send" />
+    </form>
+
+    <script>
+        document.getElementById("chat-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value;
+            messageInput.value = "";
+
+            if (message) {
+                addMessageToChatbox("user", message);
+                const golemResponse = await sendMessage(message);
+                addMessageToChatbox("golem", golemResponse);
+            }
+        });
+
+        function addMessageToChatbox(role, message) {
+            const chatbox = document.getElementById("chatbox");
+            const messageElement = document.createElement("p");
+            messageElement.className = role;
+            messageElement.textContent = message;
+            chatbox.appendChild(messageElement);
+        }
+
+        async function sendMessage(message) {
+            const user_name = document.getElementById("user_name").value;
+            const user_description = document.getElementById("user_description").value;
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message, user_name, user_description }),
+            });
+            const responseData = await response.json();
+            return responseData["response"];
+        }
+    </script>
+</body>
+</html>

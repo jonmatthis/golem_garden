@@ -13,6 +13,6 @@ def print_folder_structure(root_dir, exclude=None, depth=0):
             print("|   " * depth + "|-- " + path.name)
 
 
-root_dir = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden"
+root_dir = r"/"
 exclude = ["venv", "build", "dist", "golem_garden.egg-info", ".vscode", "golem_garden.egg-info", "__pycache__", ".git", ".idea", "github"]
 print_folder_structure(root_dir, exclude)

@@ -49,6 +49,6 @@ def crawl_directory(root_dir, exclude=None):
                     data = toml.load(file)
                 print("TOML contents:", data)
 
-root_dir = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden"
+root_dir = r"/golem_garden"
 exclude = [".git", "venv", "build", "dist", "golem_garden.egg-info", ".vscode", "golem_garden.egg-info", "__pycache__"]
 crawl_directory(root_dir, exclude)

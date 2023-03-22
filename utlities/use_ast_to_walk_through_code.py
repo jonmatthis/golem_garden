@@ -25,5 +25,5 @@ def extract_from_file(filename):
         extract_functions(node)
 
 if __name__ == "__main__":
-    script_path = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden\__main__.py"
+    script_path = r"/golem_garden/__main__.py"
     extract_from_file(script_path)

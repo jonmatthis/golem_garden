@@ -34,7 +34,7 @@ def print_object_info(obj: Union[object, str], print_code: bool = False):
 
 if __name__ == "__main__":
     # Example usage
-    script_path = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden\__main__.py"
+    script_path = r"/golem_garden/__main__.py"
     print_code = False  # Set to True to print the related Python code
 
     print_object_info(script_path, print_code)
