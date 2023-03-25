@@ -6,6 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "golem_garden"
 version = "0.2.0"  # add version field here
 description = "A Golem Garden implementation to wrangle a menagerie of chatbots."
+long-description = {file = "README.md"}
 authors = [
     { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
 ]
