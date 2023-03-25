@@ -5,6 +5,7 @@ from pymongo import MongoClient
 
 
 class ContextDatabase:
+    #TODO - integrate with new refactor of Golem class
     def __init__(self, database_name: str = "golem_garden", collection_name: str = "conversations",
                  user_id: str = "UnknownUser"):
         self.client = MongoClient()
@@ -20,15 +21,31 @@ class ContextDatabase:
     def user_id(self, user_id):
         self._user_id = user_id
 
-    def add_message(self, golem_name: str, role: str, content: str):
+    def add_message(self,
+                    golem_name: str,
+                    user_id: str,
+                    message: Dict[str, str]):
+
+        if not message["role"] in ["user", "system", "assistant"]:
+            raise ValueError("Message role must be either 'user' or 'system' or 'assistant'.")
+
         conversation = {
             "user_id": self._user_id,
             "golem_id": golem_name,
-            "role": role,
-            "content": content
+            "message": message,
         }
         self.conversations_collection.insert_one(conversation)
 
+    def add_response(self,
+                        golem_name: str,
+                        user_id: str,
+                        response: str):
+            conversation = {
+                "user_id": self._user_id,
+                "golem_id": golem_name,
+                "response": response,
+            }
+            self.conversations_collection.insert_one(conversation)
     def get_history(self, query: dict = None, ) -> List[Dict[str, str]]:
         """Get chat history for a given query. If no query is provided, return all chat history."""
 

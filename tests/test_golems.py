@@ -1,4 +1,4 @@
-from golem_garden.context_database import ContextDatabase
+from golem_garden.database.context_database import ContextDatabase
 from golem_garden.golems.golem import Golem, GreeterGolem, GardenerGolem, ExpertGolem
 
 
