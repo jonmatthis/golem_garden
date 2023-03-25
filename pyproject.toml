@@ -4,11 +4,13 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "golem_garden"
+version = "0.2.0"  # add version field here
 description = "A Golem Garden implementation to wrangle a menagerie of chatbots."
 authors = [
     { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
 ]
 license = { file = "LICENSE" }
+
 [options]
 packages = "find:"
 
@@ -17,7 +19,6 @@ dependencies = [
     "openai",
 ]
 
-dynamic = ["version", "description"]
 
 [project.optional-dependencies]
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
