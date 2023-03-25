@@ -1,32 +1,40 @@
+# pyproject.toml
+# originally based on - https://realpython.com/pypi-publish-python-package/
+
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
 name = "golem_garden"
-description = "A Golem Garden implementation to wrangle a menagerie of chatbots."
-
+readme = "README.md"
 authors = [
-    { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
+    { name = "Jonathan Samir Matthis" },
 ]
 license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+]
+keywords = [
+    "chat"
+]
 
-[options]
-packages = "find:"
 
 dependencies = [
     "python-dotenv",
     "openai",
+    "pymongo",
+    "toml",
 ]
-python = "^3.6"
-dynamic = ["version", "description"]
+requires-python = ">=3.8"
 
+dynamic = ["version", "description"]
 
 [project.optional-dependencies]
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 
 [project.urls]
-Homepage = "https://github.com/jonmatthis/golem_garden"
+Homepage = "https://github.com/freemocap/golem_garden"
 
 [tool.bumpver]
 current_version = "v0.4.0"
@@ -38,9 +46,9 @@ tag = true
 push = true
 
 [tool.bumpver.file_patterns]
+
 "golem_garden/__init__.py" = ["{version}"]
-
-
 
 [project.scripts]
 golem_garden = "golem_garden.__main__:main"
+
