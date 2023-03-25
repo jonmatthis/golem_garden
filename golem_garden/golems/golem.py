@@ -67,7 +67,9 @@ class Golem:
         return response
 
     async def poke(self):
-        user_input = f"A human just poked you! You think it's funny :D Ha ha ha!"
+        user_input = f"A human just poked you, they are checking that you are awake. " \
+                     f"Happily confirm that they poked you and briefly say something funny, unpredicable, " \
+                     f"and relevant to the fact that you were just poked :D"
 
         print(await self.chat(user_input=user_input))
 
