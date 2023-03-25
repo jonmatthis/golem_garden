@@ -4,9 +4,8 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "golem_garden"
-version = "0.2.0"  # add version field here
 description = "A Golem Garden implementation to wrangle a menagerie of chatbots."
-long-description = {file = "README.md"}
+
 authors = [
     { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
 ]
@@ -19,6 +18,8 @@ dependencies = [
     "python-dotenv",
     "openai",
 ]
+python = "^3.6"
+dynamic = ["version", "description"]
 
 
 [project.optional-dependencies]
@@ -39,8 +40,7 @@ push = true
 [tool.bumpver.file_patterns]
 "golem_garden/__init__.py" = ["{version}"]
 
-[tool.poetry.dependencies]
-python = "^3.6"
+
 
 [project.scripts]
 golem_garden = "golem_garden.__main__:main"
