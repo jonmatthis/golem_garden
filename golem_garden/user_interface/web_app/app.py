@@ -39,9 +39,10 @@ class WebApp:
 
     async def chat(self,payload: dict):
         golem_response = await self.golem_garden.pass_message_to_golem(
-            message=payload["user_input"],
+            message=payload["message"],
+            user_id=self.golem_garden.user_id,
+            user_name=payload["user_name"],
             golem_name="GreeterGolem",
-
         )
         return JSONResponse(content={"golem_response": golem_response})
 

@@ -19,6 +19,8 @@ dependencies = [
     "openai",
     "fastapi",
     "uvicorn",
+    "pymongo",
+    "toml",
 ]
 
 dynamic = ["version", "description"]

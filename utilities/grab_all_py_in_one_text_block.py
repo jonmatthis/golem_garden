@@ -70,21 +70,22 @@ class CodeDirectoryParser:
 
 
 if __name__ == '__main__':
-    directory_path = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden\user_interface\web_app"
+    directory_path = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden"
 
     excluded_directories = ['__pycache__',
                             'venv',
+                            '.venv',
                             'build',
                             'dist',
                             'golem_garden.egg-info',
-                            'tests',
-                            'system',
                             'utilities',
                             'notes',
-                            'experimental']
+                            'experimental',
+                            'docs',
+                            'tests']
 
-    included_file_types = ['.py', '.txt', '.md', '.html', '.css', '.js', '.json']
-
+    # included_file_types = ['.py', '.toml', '.txt', '.md', '.html', '.css', '.js', '.json', '.yaml', '.yml']
+    included_file_types = ['.py', '.toml']
     parser = CodeDirectoryParser(directory_path, excluded_directories, included_file_types, output_format='md')
     parser.parse_directory()
     parser.print_output()

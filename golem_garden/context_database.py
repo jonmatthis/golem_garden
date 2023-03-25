@@ -10,7 +10,7 @@ class ContextDatabase:
                  database_name: str = "golem_garden",
                  conversation_collection_name: str = "conversations",
                  user_collection_name: str = "users",
-                 user_id: str = None,
+                 session_id: str = None,
                  user_name: str = None,
                  user_description: str = None):
         self.client = MongoClient()
@@ -18,31 +18,22 @@ class ContextDatabase:
         self.conversations_collection = self.db[conversation_collection_name]
         self.users_collection = self.db[user_collection_name]
 
-        if user_id is None:
-            user_id = str(uuid.uuid4())
+        if session_id is None:
+            session_id  = str(uuid.uuid4())
 
-        self.user_id = user_id
-        self.get_or_create_user(user_id, user_name, user_description)
+        self._session_id = session_id
+        self.get_or_create_user(user_name, user_description)
 
-    def get_or_create_user(self, user_id: str, user_name: str, user_description: str):
-        user = self.users_collection.find_one({"user_id": user_id})
+    def get_or_create_user(self, user_name: str, user_description: str):
+        user = self.users_collection.find_one({"user_name": user_name})
         if user is None:
-            user = {
-                "user_id": user_id,
+            user = {                
                 "user_name": user_name,
                 "user_description": user_description,
                 "name_history": [],
                 "description_history": []
             }
             self.users_collection.insert_one(user)
-
-    @property
-    def user_id(self):
-        return self._user_id
-
-    @user_id.setter
-    def user_id(self, user_id):
-        self._user_id = user_id
 
     @property
     def user_name(self):
@@ -62,7 +53,7 @@ class ContextDatabase:
 
     def add_message(self, golem_name: str, role: str, content: str):
         conversation = {
-            "user_id": self._user_id,
+            "session_id": self._session_id,
             "user_name": self._user_name,
             "user_description": self._user_description,
             "golem_id": golem_name,
@@ -79,6 +70,7 @@ class ContextDatabase:
         if query is None:
             query = {}
 
+        #remove duplicates (e.g. greetings and whatnot )
         pipeline = [
             {"$match": query},
             {"$group": {
@@ -92,12 +84,6 @@ class ContextDatabase:
         history = list(self.conversations_collection.aggregate(pipeline))
         return history
 
-    def as_json(self):
-        conversations = list(self.conversations_collection.find({"user_id": self._user_id}))
-        return json.dumps(conversations, indent=4, default=str)
-
-    def print(self):
-        print(self.as_json())
 
 
 if __name__ == "__main__":
@@ -105,12 +91,11 @@ if __name__ == "__main__":
     demo_user_name = "John Doe"
     demo_user_description = "A demo user"
 
-    db = ContextDatabase(user_id=demo_user_id, user_name=demo_user_name, user_description=demo_user_description)
+    db = ContextDatabase(user_name=demo_user_name, user_description=demo_user_description)
     db.add_message("Golem1", "user", "Hello, Golem1!")
     db.add_message("Golem1", "golem", "Hello, John!")
     db.add_message("Golem2", "user", "Hello, Golem2!")
     db.add_message("Golem2", "golem", "Hello, John!")
-    db.print()
     print("Chat history with Golem1:")
     print(db.get_history({"golem_id": "Golem1"}))
     print("\nChat history with Golem2:")
