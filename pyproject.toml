@@ -34,7 +34,7 @@ dynamic = ["version", "description"]
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 
 [project.urls]
-Homepage = "https://github.com/freemocap/golem_garden"
+Homepage = "https://github.com/jonmatthis/golem_garden"
 
 [tool.bumpver]
 current_version = "v0.4.3"
