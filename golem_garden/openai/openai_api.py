@@ -1,5 +1,5 @@
 import asyncio
-from typing import Dict, List
+from typing import Dict, List, Any
 
 import openai
 
@@ -15,7 +15,7 @@ class OpenAIAPIClient:
     async def query(self,
                     conversation: List[Dict[str, str]],
                     chat_parameters: OpenaiChatParameters = load_openai_chat_parameters(),
-                    return_full_response: bool = False) -> str:
+                    only_return_message_content: bool = False) -> Dict[str, Any]:
         loop = asyncio.get_event_loop()
         response = await loop.run_in_executor(None, lambda: openai.ChatCompletion.create(
             messages=conversation,
@@ -31,7 +31,8 @@ class OpenAIAPIClient:
             logit_bias=chat_parameters.logit_bias,
             user=chat_parameters.user,
         ))
-        if not return_full_response:
+
+        if  only_return_message_content:
             return response.choices[0].message['content'].strip()
 
-        return list(response)
+        return dict(response)

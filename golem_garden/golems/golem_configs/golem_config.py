@@ -1,9 +1,8 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Union
 
 import toml
-
 
 DEFAULT_GOLEM_TOML = './_default_golem.toml'
 
@@ -27,8 +26,6 @@ class GolemConfig:
                 f"{self.golem_string}\n"
                 "'''\n"
                 )
-
-
 
 
 def load_golem_config(config_toml_path: Union[Path, str] = str(Path(__file__).parent / DEFAULT_GOLEM_TOML),

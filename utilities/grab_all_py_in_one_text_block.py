@@ -14,7 +14,8 @@ class CodeDirectoryParser:
         output_format (str): The format to output the parsed files. Either 'md' or 'text'.
     """
 
-    def __init__(self, directory_paths, included_files, excluded_directories=None, included_file_types=None, output_format='md'):
+    def __init__(self, directory_paths, included_files, excluded_directories=None, included_file_types=None,
+                 output_format='md'):
         self.directory_paths = directory_paths or []
         self.included_files = included_files or []
         self.excluded_directories = excluded_directories or []
@@ -22,12 +23,11 @@ class CodeDirectoryParser:
         self.output_format = output_format
         self.output = []
 
-
     def parse_directories(self):
         """
         Parse the code directory and append the parsed files to the output.
         """
-        self.output.append(f"### Included directories\n"+
+        self.output.append(f"### Included directories\n" +
                            f"### {self.directory_paths}\n")
         for directory_path in self.directory_paths:
             for root, sub_directories, files in os.walk(directory_path):
@@ -39,8 +39,8 @@ class CodeDirectoryParser:
                         with open(file_path, 'r', encoding='utf-8') as f:
                             file_content = f.read()
                             self.output.append(f"```python\n{file_content}\n```\n")
-    
-        self.output.append(f"### Included files\n"+
+
+        self.output.append(f"### Included files\n" +
                            f"### {self.included_files}\n")
         for file_path in self.included_files:
             self.output.append(f"### {file_path}\n")
@@ -54,7 +54,6 @@ class CodeDirectoryParser:
         """
         output_text = "\n".join(self.output)
 
-
         print(output_text)
         print("\n \n Done! \n \n")
         print(f"Output length: {len(output_text)}")
@@ -63,19 +62,19 @@ class CodeDirectoryParser:
 
     def _save_to_markdown_file(self, output_text):
         now = self._get_current_timestamp()
-        md_path = Path(__file__).parent / "output" /  f"copy_of_directories_on_{now}_output.md"
+        md_path = Path(__file__).parent / "output" / f"copy_of_directories_on_{now}_output.md"
         md_path.parent.mkdir(parents=True, exist_ok=True)
         output_text = self._prepend_text_for_markdown_file(now) + output_text
         print(f"Saving output to {md_path.absolute()}...")
         with open(str(md_path), 'w', encoding='utf-8') as f:
             f.write(output_text)
 
-    def _prepend_text_for_markdown_file(self, now:str):
+    def _prepend_text_for_markdown_file(self, now: str):
 
         prepend_text = f"# Included directories: {self.directory_paths}\n" \
-                        f"# Included files: {self.included_files}\n" \
+                       f"# Included files: {self.included_files}\n" \
                        f"Configurations: self.excuded_directories: {self.excluded_directories}, " \
-                        f"self.included_file_types: {self.included_file_types} \n \n"
+                       f"self.included_file_types: {self.included_file_types} \n \n"
         return prepend_text
 
     def _get_current_timestamp(self):
@@ -98,14 +97,14 @@ if __name__ == '__main__':
                             'experimental',
                             'docs',
                             'tests',
-                            "node_modules",]
+                            "node_modules", ]
 
     # included_file_types = ['.py', '.toml', '.txt', '.md', '.html', '.css', '.js', '.json', '.yaml', '.yml']
-    included_file_types = ['.py', '.toml','.vue']
-    parser = CodeDirectoryParser(directory_paths, 
-                                 included_files, 
-                                 excluded_directories, 
-                                 included_file_types, 
+    included_file_types = ['.py', '.toml', '.vue']
+    parser = CodeDirectoryParser(directory_paths,
+                                 included_files,
+                                 excluded_directories,
+                                 included_file_types,
                                  output_format='md')
     parser.parse_directories()
     parser.print_output()

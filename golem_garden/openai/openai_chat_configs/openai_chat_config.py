@@ -45,8 +45,9 @@ class OpenaiChatParameters:
                 )
 
 
-def load_openai_chat_parameters(config_toml_path: Union[Path, str] = str(Path(__file__).parent / DEFAULT_OPENAI_CHAT_TOML),
-                                ) -> OpenaiChatParameters:
+def load_openai_chat_parameters(
+        config_toml_path: Union[Path, str] = str(Path(__file__).parent / DEFAULT_OPENAI_CHAT_TOML),
+        ) -> OpenaiChatParameters:
     """
     Load the OpenaiChat golems from a TOML file.
     """

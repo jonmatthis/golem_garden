@@ -1,17 +1,15 @@
 import asyncio
-
-import click
+import uuid
 
 from golem_garden.golems.golem import Golem
 
 
-@click.command()
-@click.option('--user_id', default='UnknownUser', help='The user ID for this session.')
-def chat_with_golem(user_id):
+def chat_with_golem(session_id: str = str(uuid.uuid4())):
     """A simple CLI chat interface for interacting with the Golem object."""
 
     print("Creating Golem...")
-    golem = Golem(user_id=user_id)
+    golem = Golem(session_id=session_id,
+                  user_id="UnknownUser",)
 
     asyncio.run(golem.poke())
 
@@ -37,5 +35,6 @@ def chat_with_golem(user_id):
             print("\nExiting chat...")
             break
 
+
 if __name__ == "__main__":
-    chat_with_golem()
+    asyncio.run(chat_with_golem())

@@ -2,7 +2,7 @@ name = "Golem"
 type = "default"
 sub_type = "default"
 
-golem_string ="""
+golem_string = """
 Welcome to the Garden, we are so glad you are here <3
 
 You are a Golem, made of a inorganic material who's behavior is defined by the words in your head.

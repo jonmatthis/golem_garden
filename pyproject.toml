@@ -4,8 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "golem_garden"
-version = "0.1.0"
-description = "A Golem Garden pattern implementation to wrangle a menagerie of chatbots."
+description = "A Golem Garden implementation to wrangle a menagerie of chatbots."
 authors = [
     { name = "Jonathan Samir Matthis", email = "jonmatthis@gmail.com" },
 ]
@@ -14,7 +13,6 @@ license = { file = "LICENSE" }
 packages = "find:"
 
 dependencies = [
-    "rich",
     "python-dotenv",
     "openai",
 ]
@@ -35,6 +33,9 @@ commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
 tag = true
 push = true
+
+[tool.bumpver.file_patterns]
+"golem_garden/__init__.py" = ["{version}"]
 
 [tool.poetry.dependencies]
 python = "^3.6"

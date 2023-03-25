@@ -1,6 +1,8 @@
 # Golem Garden 🌱
 
-Golem Garden is a Python project that manages a collection of GPT-enabled chatbots called "Golems" and a swarm of simple Python scripts enacting "Beetles". The primary purpose of this project is to facilitate user interaction with various golems, providing a seamless experience in obtaining responses from different specialized chatbots.
+Golem Garden is a Python project that manages a collection of GPT-enabled chatbots called "Golems" and a swarm of simple
+Python scripts enacting "Beetles". The primary purpose of this project is to facilitate user interaction with various
+golems, providing a seamless experience in obtaining responses from different specialized chatbots.
 
 ## Features
 
@@ -31,11 +33,15 @@ To install the golem_garden package using Poetry, follow these steps:
    git clone https://github.com/jonmatthis/golem_garden.git
    cd golem_garden
 ```
+
 3. Install the project dependencies and create a virtual environment:
+
 ```bash
   poetry install
 ```
+
 4. Activate the virtual environment:
+
 ```bash 
 poetry shell
 ```

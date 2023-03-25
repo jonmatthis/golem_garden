@@ -1,6 +1,9 @@
 # Welcome to Golem Garden 🌱
 
-Golem Garden is a Python project designed to manage a menagerie of GPT-enabled chatbots called "Golems" and a swarm of simple Python scripts enacting "Beetles". It provides a powerful and flexible framework for creating and interacting with these chatbots while addressing the novel opportunities and challenges associated with API calls to large language models like OpenAI's GPT.
+Golem Garden is a Python project designed to manage a menagerie of GPT-enabled chatbots called "Golems" and a swarm of
+simple Python scripts enacting "Beetles". It provides a powerful and flexible framework for creating and interacting
+with these chatbots while addressing the novel opportunities and challenges associated with API calls to large language
+models like OpenAI's GPT.
 
 ## Features
 

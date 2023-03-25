@@ -1,5 +1,6 @@
 import asyncio
 import os
+import uuid
 
 import openai
 from dotenv import load_dotenv
@@ -15,15 +16,17 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class Golem:
     def __init__(self,
-                 user_id: str = "UnknownUser",
+                 user_id: str,
+                 session_id: str = str(uuid.uuid4()),
                  golem_config: GolemConfig = load_golem_config(),
                  openai_chat_parameters: OpenaiChatParameters = load_openai_chat_parameters(),
-                 context_database: ContextDatabase = ContextDatabase()):
+                 ):
         self._user_id = user_id
+        self._session_id = session_id
         self._golem_config = golem_config
         self._openai_chat_parameters = openai_chat_parameters
         self._openai_client = OpenAIAPIClient(api_key=openai.api_key)
-        self._context_database = context_database
+        self._context_database = ContextDatabase(session_id=self._session_id)
 
     @property
     def name(self) -> str:
@@ -49,7 +52,8 @@ class Golem:
                        "content": user_input.strip()}
 
         history = self._context_database.get_history({"golem_name": self._golem_config.name,
-                                                      "user_id": self._user_id})
+                                                      "user_id": self._user_id,
+                                                      "session_id": self._session_id})
 
         conversation = [system]
         if len(history) > 0:
@@ -58,13 +62,15 @@ class Golem:
 
         response = await self._openai_client.query(conversation=conversation,
                                                    chat_parameters=self._openai_chat_parameters, )
+
         self._context_database.add_message(golem_name=self.name,
                                            user_id=self._user_id,
                                            message=new_message)
         self._context_database.add_response(golem_name=self.name,
                                             user_id=self._user_id,
                                             response=response)
-        return response
+
+        return response["choices"][0]["message"]["content"].strip()
 
     async def poke(self):
         user_input = f"A human just poked you, say the Golem equivalent of 'Hello World!'"
