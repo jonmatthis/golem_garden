@@ -25,6 +25,7 @@ dependencies = [
     "openai",
     "pymongo",
     "toml",
+    "Alpaca-Turbo" = { git = "https://github.com/ViperX7/Alpaca-Turbo", rev = "main" },
 ]
 requires-python = ">=3.8"
 
