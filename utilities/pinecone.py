@@ -3,8 +3,6 @@ import openai
 from dotenv import load_dotenv
 import pinecone
 from pinecone import Index
-from datasets import load_dataset
-from tqdm.auto import tqdm
 
 # Load environment variables
 load_dotenv()

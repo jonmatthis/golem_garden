@@ -1,16 +1,25 @@
+import os
 import uuid
 from typing import Dict, List, Union
 
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
 
-class ContextDatabase:
+
+class MongoDatabase:
     # TODO - integrate with new refactor of Golem class
     def __init__(self,
                  database_name: str = "golem_garden",
                  collection_name: str = "conversations",
                  session_id: str = str(uuid.uuid4())):
-        self._mongo_client = MongoClient()
+        # load_dotenv()
+        # self._mongo_client = MongoClient(os.getenv('MONGO_URI'))
+        self._mongo_client = MongoClient("mongodb://localhost:27017/")
+        db = self._mongo_client.test
+        print(f"\n\n\n_________\ndb: {db}\n__________\n\n\n")
+        print(f"\n\n\n_________\ndb.list_collection_names(): {db.list_collection_names()}\n__________\n\n\n")
+
         self._database = self._mongo_client[database_name]
         self._conversations_collection = self._database[collection_name]
         self._session_id = session_id

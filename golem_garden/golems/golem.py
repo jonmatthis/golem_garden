@@ -2,16 +2,11 @@ import asyncio
 import os
 import uuid
 
-import openai
-from dotenv import load_dotenv
 
-from golem_garden.database.context_database import ContextDatabase
+from golem_garden.database.database_factory import get_database
 from golem_garden.golems.golem_configs.golem_config import GolemConfig, load_golem_config
 from golem_garden.openai.openai_api import OpenAIAPIClient
 from golem_garden.openai.openai_chat_configs.openai_chat_config import OpenaiChatParameters, load_openai_chat_parameters
-
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 class Golem:
@@ -25,8 +20,8 @@ class Golem:
         self._session_id = session_id
         self._golem_config = golem_config
         self._openai_chat_parameters = openai_chat_parameters
-        self._openai_client = OpenAIAPIClient(api_key=openai.api_key)
-        self._context_database = ContextDatabase(session_id=self._session_id)
+        self._openai_client = OpenAIAPIClient()
+        self._context_database = get_database()
 
     @property
     def name(self) -> str:

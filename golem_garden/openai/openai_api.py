@@ -1,16 +1,18 @@
 import asyncio
+import os
 from typing import Dict, List, Any
 
 import openai
+from dotenv import load_dotenv
 
 from golem_garden.openai.openai_chat_configs.openai_chat_config import OpenaiChatParameters, load_openai_chat_parameters
 
 
 class OpenAIAPIClient:
     # TODO - integrate with new impelementation fo Golem and use openai_chat_config
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-        openai.api_key = self.api_key
+    def __init__(self):
+        load_dotenv()
+        openai.api_key = os.getenv("OPENAI_API_KEY")
 
     async def query(self,
                     conversation: List[Dict[str, str]],
