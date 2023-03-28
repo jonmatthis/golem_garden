@@ -3,5 +3,10 @@
 We're so glad you're here 🌱✨
 
 In a terminal with a Python environment enabled, enter:
->> `pip install -e .`
->> `golem_garden`
+```bash
+pip install -e .
+```
+Then:
+```bash
+golem_garden`
+```
