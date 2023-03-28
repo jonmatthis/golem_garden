@@ -25,6 +25,7 @@ class Golem:
 
     @property
     def name(self) -> str:
+        #TODO - create unique uuid for each golem when it is created
         return self._golem_config.name
 
     @property
@@ -46,9 +47,9 @@ class Golem:
         new_message = {"role": "user",
                        "content": user_input.strip()}
 
-        history = self._context_database.get_history({"golem_name": self._golem_config.name,
-                                                      "user_id": self._user_id,
-                                                      "session_id": self._session_id})
+        history = self._context_database.get_history(golem_id=self.name,
+                                                     user_id=self._user_id,
+                                                     )
 
         conversation = [system]
         if len(history) > 0:
@@ -58,10 +59,10 @@ class Golem:
         response = await self._openai_client.query(conversation=conversation,
                                                    chat_parameters=self._openai_chat_parameters, )
 
-        self._context_database.add_message(golem_name=self.name,
+        self._context_database.add_message(golem_id=self.name,
                                            user_id=self._user_id,
                                            message=new_message)
-        self._context_database.add_response(golem_name=self.name,
+        self._context_database.add_response(golem_id = self.name,
                                             user_id=self._user_id,
                                             response=response)
 

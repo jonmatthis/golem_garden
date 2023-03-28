@@ -1,4 +1,5 @@
 import json
+import logging
 import uuid
 from pathlib import Path
 from typing import Union
@@ -7,11 +8,13 @@ from golem_garden.database._strategies.base_database import BaseDatabase
 
 DATABASE_PATH = Path(__file__).parent.parent / "database.json"
 
+logger = logging.getLogger(__name__)
+
 
 class JSONDatabase(BaseDatabase):
     def __init__(self,
-                 database_path: Union[Path,str] = str(DATABASE_PATH),
-                 session_id: str = None):
+                 database_path: Union[Path, str] = str(DATABASE_PATH),
+                 session_id: str = uuid.uuid4()):
 
         self._database_path = Path(database_path).resolve()
         self._data = self._load_data()
@@ -27,7 +30,7 @@ class JSONDatabase(BaseDatabase):
                 try:
                     return json.load(file)
                 except json.JSONDecodeError:
-                    print("Warning: Invalid JSON format. Initializing an empty database.")
+                    logger.warning("Warning: Invalid JSON format. Initializing an empty database.")
                     return {}
         else:
             return {}
@@ -61,20 +64,24 @@ class JSONDatabase(BaseDatabase):
         self._data[user_id][golem_id][self.session_id].append({"type": "response", "content": response})
         self._save_data()
 
-    def get_history(self, query_dict):
-        user_id = query_dict.get("user_id")
-        golem_id = query_dict.get("golem_id")
-        session_id = self.session_id
+    def get_history(self,
+                    user_id: str,
+                    golem_id: str,
+                    this_session_only: bool = True):
+
 
         try:
-            return self._data[user_id][golem_id][session_id]
+            if this_session_only:
+                return self._data[user_id][golem_id][session_id]
+            else:
+                return self._data[user_id][golem_id]
         except KeyError:
-            print(f"Warning: No history found for the given query: {query_dict}")
+            logger.warning(f"Warning: No history found for the given query: {query_dict}")
             return []
 
 
 if __name__ == "__main__":
-    user_id = "test_user1"
+    test_user_id = "test_user1"
     golem1_id = "test_golem1"
     golem2_id = "test_golem2"
     session_id = "test_session1"
@@ -82,21 +89,21 @@ if __name__ == "__main__":
     test_database_path = Path(__file__).parent.parent / "test_database.json"
     database = JSONDatabase(database_path=test_database_path, session_id=session_id)
 
-    database.add_message(user_id, golem1_id, "Hello Golem1!")
-    database.add_response(user_id, golem1_id, "Hello,Wow!, how can I help you?")
+    database.add_message(test_user_id, golem1_id, "Hello Golem1!")
+    database.add_response(test_user_id, golem1_id, "Hello,Wow!, how can I help you?")
 
-    database.add_message(user_id, golem2_id, "Hello Golem2!")
-    database.add_response(user_id, golem2_id, "Hello, Jeez! how can I help you?")
+    database.add_message(test_user_id, golem2_id, "Hello Golem2!")
+    database.add_response(test_user_id, golem2_id, "Hello, Jeez! how can I help you?")
 
     query_dict = {
-        "user_id": user_id,
+        "user_id": test_user_id,
         "golem_id": golem1_id
     }
 
     print(f"History for {query_dict}:\n {database.get_history(query_dict)}")
 
     query_dict = {
-        "user_id": user_id,
+        "user_id": test_user_id,
         "golem_id": golem2_id
     }
     print(f"History for {query_dict}:\n {database.get_history(query_dict)}")

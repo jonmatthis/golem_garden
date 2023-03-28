@@ -1,5 +1,4 @@
 from enum import Enum
-
 from typing import Optional
 
 from golem_garden.database._strategies.json_database import JSONDatabase
@@ -8,12 +7,13 @@ from golem_garden.database._strategies.mongo_database import MongoDatabase
 
 class DatabaseType(Enum):
     JSON = "json"
-    MONGODB = "mongodatabase"
+    MONGODB = "mongodb"
     SQL = "sql"
 
 
 def get_database(database_type: DatabaseType = DatabaseType.JSON,
                  database_path: Optional[str] = None):
+
     if database_type == DatabaseType.JSON:
         return JSONDatabase()
 
