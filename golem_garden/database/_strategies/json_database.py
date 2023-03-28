@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class JSONDatabase(BaseDatabase):
     def __init__(self,
                  database_path: Union[Path, str] = str(DATABASE_PATH),
-                 session_id: str = uuid.uuid4()):
+                 session_id: str = str(uuid.uuid4())):
 
         self._database_path = Path(database_path).resolve()
         self._data = self._load_data()
@@ -60,8 +60,8 @@ class JSONDatabase(BaseDatabase):
             self._data[user_id][golem_id] = {}
         if not self.session_id in self._data[user_id][golem_id]:
             self._data[user_id][golem_id][self.session_id] = []
-
-        self._data[user_id][golem_id][self.session_id].append({"type": "response", "content": response})
+        content = response['choices'][0]['message']['content'].strip()
+        self._data[user_id][golem_id][self.session_id].append({"role": "assistant", "content": content})
         self._save_data()
 
     def get_history(self,
@@ -72,11 +72,11 @@ class JSONDatabase(BaseDatabase):
 
         try:
             if this_session_only:
-                return self._data[user_id][golem_id][session_id]
+                return self._data[user_id][golem_id][self.session_id]
             else:
                 return self._data[user_id][golem_id]
         except KeyError:
-            logger.warning(f"Warning: No history found for the given query: {query_dict}")
+            #logger.warning(f"Warning: No history found for the given query: {query_dict}")
             return []
 
 

@@ -1,0 +1,19 @@
+{
+    "UnknownUser": {
+        "Golem": {
+            "3fd9c3e2-c331-4996-bf57-0175dbf86012": [
+                {
+                    "type": "user_message",
+                    "content": {
+                        "role": "user",
+                        "content": "hello"
+                    }
+                },
+                {
+                    "role": "assistant",
+                    "content": "Hello! How can I help you today? \ud83d\ude0a"
+                }
+            ]
+        }
+    }
+}
