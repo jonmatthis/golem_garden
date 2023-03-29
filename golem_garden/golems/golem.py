@@ -1,7 +1,5 @@
 import asyncio
-import os
 import uuid
-
 
 from golem_garden.database.database_factory import get_database
 from golem_garden.golems.golem_configs.golem_config import GolemConfig, load_golem_config
@@ -25,7 +23,7 @@ class Golem:
 
     @property
     def name(self) -> str:
-        #TODO - create unique uuid for each golem when it is created
+        # TODO - create unique uuid for each golem when it is created
         return self._golem_config.name
 
     @property
@@ -44,27 +42,25 @@ class Golem:
         system = {"role": "system",
                   "content": self._golem_config.golem_string,
                   }
-        new_message = {"role": "user",
+        user_message = {"role": "user",
                        "content": user_input.strip()}
 
         history = self._context_database.get_history(golem_id=self.name,
-                                                     user_id=self._user_id,
-                                                     )
+                                                     user_id=self._user_id)
 
         conversation = [system]
-        if len(history) > 0:
-            conversation.extend(history)
-        conversation.append(new_message)
+        conversation.extend(history)
+        conversation.append(user_message)
 
         response = await self._openai_client.query(conversation=conversation,
                                                    chat_parameters=self._openai_chat_parameters, )
 
-        self._context_database.add_message(golem_id=self.name,
-                                           user_id=self._user_id,
-                                           message=new_message)
-        self._context_database.add_response(golem_id = self.name,
-                                            user_id=self._user_id,
-                                            response=response)
+        self._context_database.add_user_message(golem_id=self.name,
+                                                user_id=self._user_id,
+                                                user_message=user_message)
+        self._context_database.add_golem_response(golem_id=self.name,
+                                                  user_id=self._user_id,
+                                                  response=response)
 
         return response["choices"][0]["message"]["content"].strip()
 

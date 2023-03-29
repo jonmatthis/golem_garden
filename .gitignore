@@ -132,3 +132,4 @@ dmypy.json
 utilities/output/*
 
 .DS_Store
+database.json
