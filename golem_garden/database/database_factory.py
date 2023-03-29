@@ -35,8 +35,8 @@ if __name__ == "__main__":
 
     database = get_database(database_type, database_path)
 
-    database.add_message(subject_id, golem_id, "Hello Golem!")
-    database.add_response(subject_id, golem_id, "Hello, how can I help you?")
+    database.add_user_message(subject_id, golem_id, "Hello Golem!")
+    database.add_golem_response(subject_id, golem_id, "Hello, how can I help you?")
 
     query_dict = {
         "subject_id": subject_id,

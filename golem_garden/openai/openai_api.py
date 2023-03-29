@@ -22,16 +22,16 @@ class OpenAIAPIClient:
         response = await loop.run_in_executor(None, lambda: openai.ChatCompletion.create(
             messages=conversation,
             model=chat_parameters.model_name,
-            temperature=chat_parameters.temperature,
-            top_p=chat_parameters.top_p,
-            n=chat_parameters.n,
-            # stream=chat_config.stream, #TODO - figure out how this works lol
-            # stop=chat_config.stop, #TODO - figure out how this works lol
-            max_tokens=chat_parameters.max_tokens,
-            presence_penalty=chat_parameters.presence_penalty,
-            frequency_penalty=chat_parameters.frequency_penalty,
-            logit_bias=chat_parameters.logit_bias,
-            user=chat_parameters.user,
+            # temperature=chat_parameters.temperature,
+            # top_p=chat_parameters.top_p,
+            # n=chat_parameters.n,
+            # # stream=chat_config.stream, #TODO - figure out how this works lol
+            # # stop=chat_config.stop, #TODO - figure out how this works lol
+            # max_tokens=chat_parameters.max_tokens,
+            # presence_penalty=chat_parameters.presence_penalty,
+            # frequency_penalty=chat_parameters.frequency_penalty,
+            # logit_bias=chat_parameters.logit_bias,
+            # user=chat_parameters.user,
         ))
 
         if  only_return_message_content:
