@@ -31,6 +31,7 @@ dependencies = [
     "uvicorn",
     "pyqt6",
     "qtconsole",
+    "pyqtgraph",
 ]
 requires-python = ">=3.8"
 
