@@ -40,7 +40,7 @@ def retrieve_and_generate_chat_response(query: str, index: Index, limit: int = 3
     )
 
     embedding_vector_of_the_query = embedding_create_response['data'][0]['embedding']
-    embedded_query_response = index.query(embedding_vector_of_the_query, top_k=3, include_metadata=True)
+    embedded_query_response = index.query_api(embedding_vector_of_the_query, top_k=3, include_metadata=True)
     contexts = [
         x['metadata']['text'] for x in embedded_query_response['matches']
     ]
