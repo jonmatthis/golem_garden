@@ -76,7 +76,7 @@ class CustomJupyterWidget(RichJupyterWidget):
                 if user_input.startswith("!"):  # Check for the special character
                     self.execute(user_input[1:])  # Execute the user input without the special character as a command
                 else:
-                    self.execute("pass")
+                    self.execute(f"print('{user_input}')")
 
                 response = asyncio.run(self.golem.chat(user_input))
                 self._append_plain_text(f"{self.golem.name}: {response}\n", True)
