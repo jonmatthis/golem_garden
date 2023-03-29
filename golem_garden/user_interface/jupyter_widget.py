@@ -73,11 +73,55 @@ class CustomJupyterWidget(RichJupyterWidget):
                     self.close()
                     return True
 
+                if user_input.startswith("!"):  # Check for the special character
+                    self.execute(user_input[1:])  # Execute the user input without the special character as a command
+                else:
+                    self.execute("pass")
+
                 response = asyncio.run(self.golem.chat(user_input))
                 self._append_plain_text(f"{self.golem.name}: {response}\n", True)
                 self.input_buffer = ''
                 return True
         return super().eventFilter(obj, event)
+
+    # def eventFilter(self, obj: QtCore.QObject, event: QtCore.QEvent) -> bool:
+    #     """Handle key press events."""
+    #     if event.type() == QtCore.QEvent.KeyPress and obj is self._control:
+    #         key = event.key()
+    #         # Detect when the user presses the Enter or Return key
+    #         if key in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+    #             user_input = self.input_buffer
+    #             if user_input.lower() in ["quit", "exit"]:
+    #                 self.kernel_client.stop_channels()
+    #                 self.kernel_manager.shutdown_kernel()
+    #                 self.close()
+    #                 return True
+    #
+    #             self.execute(user_input)  # Execute the user input as a command
+    #             response = asyncio.run(self.golem.chat(user_input))
+    #             self._append_plain_text(f"{self.golem.name}: {response}\n", True)
+    #             self.input_buffer = ''
+    #             return True
+    #     return super().eventFilter(obj, event)
+
+    # def eventFilter(self, obj: QtCore.QObject, event: QtCore.QEvent) -> bool:
+    #     """Handle key press events."""
+    #     if event.type() == QtCore.QEvent.KeyPress and obj is self._control:
+    #         key = event.key()
+    #         # Detect when the user presses the Enter or Return key
+    #         if key in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+    #             user_input = self.input_buffer
+    #             if user_input.lower() in ["quit", "exit"]:
+    #                 self.kernel_client.stop_channels()
+    #                 self.kernel_manager.shutdown_kernel()
+    #                 self.close()
+    #                 return True
+    #
+    #             response = asyncio.run(self.golem.chat(user_input))
+    #             self._append_plain_text(f"{self.golem.name}: {response}\n", True)
+    #             self.input_buffer = ''
+    #             return True
+    #     return super().eventFilter(obj, event)
 
     def shutdown_kernel(self):
         self.kernel_client.stop_channels()
