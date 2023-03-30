@@ -29,6 +29,9 @@ dependencies = [
     "openai",
     "fastapi",
     "uvicorn",
+    "torch",
+    "retry",
+    "sentence-transformers"
 ]
 requires-python = ">=3.8"
 
