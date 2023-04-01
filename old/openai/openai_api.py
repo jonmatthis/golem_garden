@@ -5,7 +5,7 @@ from typing import Dict, List, Any
 import openai
 from dotenv import load_dotenv
 
-from golem_garden.openai.openai_chat_configs.openai_chat_config import OpenaiChatParameters, load_openai_chat_parameters
+from golem_garden import OpenaiChatParameters, load_openai_chat_parameters
 
 
 class OpenAIAPIClient:

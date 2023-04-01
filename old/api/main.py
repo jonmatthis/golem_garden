@@ -5,7 +5,7 @@ from pydantic import BaseModel
 import asyncio
 import uuid
 
-from golem_garden.golems.golem import Golem
+from golem_garden import Golem
 
 app = FastAPI()
 

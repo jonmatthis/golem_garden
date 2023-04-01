@@ -13,7 +13,7 @@ from pyqtgraph.dockarea.DockArea import DockArea
 
 import asyncio
 
-from golem_garden.golems.golem import Golem
+from golem_garden import Golem
 
 class CustomMainWindow(QMainWindow):
     def __init__(self, dark_mode=True):

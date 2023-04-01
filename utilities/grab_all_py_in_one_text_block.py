@@ -83,9 +83,10 @@ class CodeDirectoryParser:
 
 
 if __name__ == '__main__':
-    # directory_paths = [r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden"]
+
+    directory_paths = ["/Users/jon/code_software_repositories/jonmatthis/github/golem_garden/golem_garden"]
     # directory_paths = [r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden\database"]
-    directory_paths = [r"C:\Users\jonma\github_repos\freemocap_organization\freemocap"]
+    # directory_paths = [r"C:\Users\jonma\github_repos\freemocap_organization\freemocap"]
 
     included_files = []
 

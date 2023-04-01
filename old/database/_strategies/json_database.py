@@ -4,7 +4,7 @@ import uuid
 from pathlib import Path
 from typing import Union, Dict
 
-from golem_garden.database._strategies.base_database import BaseDatabase
+from golem_garden import BaseDatabase
 
 DATABASE_PATH = Path(__file__).parent.parent / "database.json"
 

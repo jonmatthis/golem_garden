@@ -23,15 +23,12 @@ keywords = [
 dependencies = [
     "python-dotenv",
     "openai",
-    "pymongo",
-    "motor",
     "toml",
     "openai",
     "fastapi",
     "uvicorn",
     "pyqt6",
     "qtconsole",
-    "pyqtgraph",
 ]
 requires-python = ">=3.8"
 

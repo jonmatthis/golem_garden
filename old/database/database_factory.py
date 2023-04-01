@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import Optional
 
-from golem_garden.database._strategies.json_database import JSONDatabase
-from golem_garden.database._strategies.mongo_database import MongoDatabase
+from old.database._strategies.json_database import JSONDatabase
+from old.database._strategies.mongo_database import MongoDatabase
 
 
 class DatabaseType(Enum):

@@ -1,7 +1,7 @@
 import asyncio
 import uuid
 
-from golem_garden.golems.golem import Golem
+from golem_garden import Golem
 
 
 def chat_with_golem(session_id: str = str(uuid.uuid4())):

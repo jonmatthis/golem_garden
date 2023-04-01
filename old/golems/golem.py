@@ -1,10 +1,10 @@
 import asyncio
 import uuid
 
-from golem_garden.database.database_factory import get_database
-from golem_garden.golems.golem_configs.golem_config import GolemConfig, load_golem_config
-from golem_garden.openai.openai_api import OpenAIAPIClient
-from golem_garden.openai.openai_chat_configs.openai_chat_config import OpenaiChatParameters, load_openai_chat_parameters
+from old.database.database_factory import get_database
+from golem_garden import GolemConfig, load_golem_config
+from golem_garden import OpenAIAPIClient
+from golem_garden import OpenaiChatParameters, load_openai_chat_parameters
 
 
 class Golem:
