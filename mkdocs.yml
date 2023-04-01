@@ -14,5 +14,4 @@ nav:
       - Usage: user_guide/usage.md
   - API Reference: api_reference.md
   - Development:
-      - Contributing: development/contributing.md
       - Style Guide: development/style_guide.md

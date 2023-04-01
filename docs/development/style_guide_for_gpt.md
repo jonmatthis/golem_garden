@@ -1,6 +1,6 @@
-# Golem Garden Style Guide
+# Code Style Guide
 
-This style guide aims to maintain code readability, quality, and maintainability in the Golem Garden project. It
+This style guide aims to maintain code readability, quality, and maintainability of tis project. 
 incorporates best practices and focuses on a "universal design" approach to make the code understandable to both experts
 and non-experts.
 
@@ -38,11 +38,3 @@ and non-experts.
    code.
 
 9. **Modularize code**: Organize code into modules and packages to maintain a clean and organized codebase.
-
-10. **Minimal comments**: Avoid comments if possible. Write code that is simple and descriptive enough that comments are
-    not necessary. If needed, use comments sparingly to provide context or explain complex or non-obvious sections of
-    your code.
-
-
-13. **Code reviews**: Perform code reviews with team members or peers to maintain a high-quality codebase.
-
