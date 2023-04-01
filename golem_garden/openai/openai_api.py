@@ -18,7 +18,9 @@ class OpenAIAPIClient:
                     conversation: List[Dict[str, str]],
                     chat_parameters: OpenaiChatParameters = load_openai_chat_parameters(),
                     only_return_message_content: bool = False) -> Dict[str, Any]:
+
         loop = asyncio.get_event_loop()
+
         response = await loop.run_in_executor(None, lambda: openai.ChatCompletion.create(
             messages=conversation,
             model=chat_parameters.model_name,
