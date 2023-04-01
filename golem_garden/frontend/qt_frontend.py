@@ -29,9 +29,10 @@ class App(QWidget):
         message = self.input.text()
         response = requests.get(f"http://127.0.0.1:8000/message/{message}")
         data = response.json()
-        self.result_label.setText(f"Server response at {data['timestamp']}: {data['message']}")
+        self.result_label.setText(f"Server response at {data['timestamp']}:\n{data['message']}\nConfig:\n{data['config']}")
 
 def main():
+
     app = QApplication(sys.argv)
     ex = App()
     ex.show()

@@ -1,0 +1,13 @@
+type = "default"
+sub_type = "default"
+model_name = "gpt-3.5-turbo"
+temperature = 0.9
+max_tokens = 1000
+top_p = 1
+n = 1
+stream = true
+stop = { }
+presence_penalty = 0
+frequency_penalty = 0
+logit_bias = { }
+user = "User"
