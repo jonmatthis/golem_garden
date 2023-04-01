@@ -2,7 +2,6 @@ import sys
 import requests
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QApplication
 
-
 class App(QWidget):
     def __init__(self):
         super().__init__()
@@ -30,7 +29,7 @@ class App(QWidget):
         message = self.input.text()
         response = requests.get(f"http://127.0.0.1:8000/message/{message}")
         data = response.json()
-        self.result_label.setText(f"Server response: {data['message']}")
+        self.result_label.setText(f"Server response at {data['timestamp']}: {data['message']}")
 
 def main():
     app = QApplication(sys.argv)
