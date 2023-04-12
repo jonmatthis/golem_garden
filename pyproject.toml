@@ -27,7 +27,11 @@ dependencies = [
     "openai",
     "fastapi",
     "uvicorn",
-    "google-search-results"
+    "google-search-results",
+    "langchain",
+    "rich",
+    "wikipedia",
+    "wolframalpha"
 ]
 requires-python = ">=3.8"
 
