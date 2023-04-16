@@ -1,11 +1,13 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
-load_dotenv()
+env_path = Path(__file__).parent.parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 from langchain import SerpAPIWrapper, WikipediaAPIWrapper, WolframAlphaAPIWrapper
 from rich.console import Console
@@ -48,7 +50,7 @@ class Golem:
                                        verbose=True,
                                        memory=self._memory)
 
-    def intake_message(self, message: str):
+    def process_message(self, message: str):
         console.print(f"Received message: {message}")
         response = self._chain.run(message)
         return response

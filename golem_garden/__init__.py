@@ -1,4 +1,4 @@
-"""Welcome to the Garden - We're so glad you're here <3 """
+"""Welcome to the Garden """
 __version__ = "v0.4.11"
 import sys
 from pathlib import Path

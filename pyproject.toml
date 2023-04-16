@@ -37,6 +37,8 @@ dependencies = [
     "faiss-cpu",
     "sentence-transformers",
     "openai_pricing_logger",
+    "fastapi",
+    "uvicorn",
 ]
 requires-python = ">=3.8"
 
