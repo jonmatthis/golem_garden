@@ -34,7 +34,9 @@ dependencies = [
     "wolframalpha",
     "chromadb",
     "pydantic",
-    "faiss-cpu"
+    "faiss-cpu",
+    "sentence-transformers",
+    "openai_pricing_logger",
 ]
 requires-python = ">=3.8"
 

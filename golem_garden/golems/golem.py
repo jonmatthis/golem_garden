@@ -13,6 +13,9 @@ from rich.console import Console
 console = Console()
 
 
+
+
+
 class Golem:
     def __init__(self):
         console.print("Initializing Golem...")
