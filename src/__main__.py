@@ -3,8 +3,8 @@ import os
 
 from dotenv import load_dotenv
 
-from golem_garden.golems.document_editor import GolemDocumentEditor
-from golem_garden.golems.golem import Golem
+from src.golems.document_editor import GolemDocumentEditor
+from src.golems.golem import Golem
 
 load_dotenv()
 
