@@ -24,14 +24,18 @@ load_dotenv()
 os.environ["LANGCHAIN_HANDLER"] = "langchain"
 
 
-# # %%
-# %pip install bs4
-# %pip install nest_asyncio
-# %pip install pandas
-# %pip install langchain
-# %pip install duckduckgo_search
-# %pip install playwright
 
+OBJECTIVE = "I want to create personalized emails to send to high schools in Massachusetts that have dog or dog breeds " \
+            "as their mascots asking them to contact their state representative to support a dog welfare bill. " \
+            "Format your emails to be personalized to each school and save them out to file when you are done." \
+            " You can use the following template:" \
+            " Dear [school name], We are reaching out to [your school name] to ask you to contact your state" \
+            " representative to support a dog welfare bill. [Insert a paragraph about why you think this bill is " \
+            "important and why you think your school should support it. ]. I am writing to you because" \
+            " [insert a reason why you think your school should support this bill that mentions their mascot]. I " \
+            "hope you will consider contacting your state representative to support this bill" \
+            " [include contact information for the state representive for people who live near that school]. " \
+            "Thank you!"
 
 def run_async(coroutine):
     event_loop = asyncio.get_event_loop()
@@ -70,17 +74,6 @@ if __name__ == "__main__":
 
     # task
     new_todo_bool = False
-    OBJECTIVE = "I want to create personalized emails to send to high schools in Massachusetts that have dog or dog breeds " \
-                "as their mascots asking them to contact their state representative to support a dog welfare bill. " \
-                "Format your emails to be personalized to each school and save them out to file when you are done." \
-                " You can use the following template:" \
-                " Dear [school name], We are reaching out to [your school name] to ask you to contact your state" \
-                " representative to support a dog welfare bill. [Insert a paragraph about why you think this bill is " \
-                "important and why you think your school should support it. ]. I am writing to you because" \
-                " [insert a reason why you think your school should support this bill that mentions their mascot]. I " \
-                "hope you will consider contacting your state representative to support this bill" \
-                " [include contact information for the state representive for people who live near that school]. " \
-                "Thank you!"
 
     # prompt
     task_completion_prompt = CustomPromptTemplate(
