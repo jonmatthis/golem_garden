@@ -1,14 +1,36 @@
 import pathlib
 from pathlib import Path
 
+from langchain.chains.combine_documents.base import BaseCombineDocumentsChain
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.tools import BaseTool
+from pydantic import Field
 
-class DirectoryWalker:
-    """A class to walk through a directory and print its structure."""
+
+EXCLUDED_DIRECTORIES = [".git",
+                        ".idea",
+                        "venv",
+                        "utilities",
+                        "tests",
+                        "docs",
+                        "data",
+                        "golem_garden.egg-info",
+                        ]
+INCLUDED_FILE_EXTENSIONS = [".py",
+                            ".md", ]
+
+class DirectoryWalker(BaseTool):
+    name = "query_webpage"
+    description = "A class to walk through a directory and print its structure."
+    text_splitter: RecursiveCharacterTextSplitter = Field(default_factory=_get_text_splitter)
+    qa_chain: BaseCombineDocumentsChain
+
+
 
     def __init__(self,
                  root_dir: str,
-                 excluded_directories: list = [],
-                 included_file_extensions: list = [], ):
+                 excluded_directories: list = EXCLUDED_DIRECTORIES,
+                 included_file_extensions: list = INCLUDED_FILE_EXTENSIONS ):
         """
         Initialize the DirectoryWalker.
 
@@ -59,17 +81,7 @@ if __name__ == "__main__":
     # root_directory = input("Enter the root directory: ")
     # root_directory = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden"
     root_directory = r"C:\Users\jonma\github_repos\jonmatthis\Alpaca-Turbo"
-    excluded_directories = [".git",
-                            ".idea",
-                            "venv",
-                            "utilities",
-                            "tests",
-                            "docs",
-                            "data",
-                            "golem_garden.egg-info",
-                            ]
-    included_file_extensions = [".py",
-                                ".md", ]
+
 
     print(f"Printing the structure of {root_directory}...")
     walker = DirectoryWalker(root_dir=root_directory,
