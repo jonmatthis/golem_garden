@@ -10,7 +10,7 @@
 # %pip install pandas
 # %pip install langchain
 
-os.environ["LANGCHAIN_HANDLER"] = "langchain"
+
 # %%
 # General 
 import pandas as pd
