@@ -1,19 +1,25 @@
 import json
-import re
-from typing import Optional, Union
+from typing import Optional, List
 
 import pandas as pd
-from duckduckgo_search import ddg
-from langchain.agents import tool, create_pandas_dataframe_agent, AgentOutputParser
+from langchain.agents import tool, create_pandas_dataframe_agent
 from langchain.chains.combine_documents.base import BaseCombineDocumentsChain
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
-from langchain.schema import Document, AgentAction, AgentFinish
+from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.tools import BaseTool
 from pydantic import Field
 
-from jupyter_notebooks.langchain_agent_playground import llm, _get_text_splitter, browse_web_page
+from src.data_loaders.async_load_url_with_playwright import async_load_url_with_playwright
 
+
+def _get_text_splitter():
+    return RecursiveCharacterTextSplitter(
+        # Set a really small chunk size, just to show.
+        chunk_size=500,
+        chunk_overlap=20,
+        length_function=len,
+    )
 
 @tool
 def process_csv(csv_file_path: str, instructions: str, output_path: Optional[str] = None) -> str:
@@ -73,26 +79,15 @@ class WebpageQATool(BaseTool):
         raise NotImplementedError
 
 
-class CustomOutputParser(AgentOutputParser):
-
-    def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
-        # Check if agent should finish
-        if "Final Answer:" in llm_output:
-            return AgentFinish(
-                # Return values is generally always a dictionary with a single `output` key
-                # It is not recommended to try anything else at the moment :)
-                return_values={"output": llm_output.split("Final Answer:")[-1].strip()},
-                log=llm_output,
-            )
-        # Parse out the action and action input
-        regex = r"Action\s*\d*\s*:(.*?)\nAction\s*\d*\s*Input\s*\d*\s*:[\s]*(.*)"
-        match = re.search(regex, llm_output, re.DOTALL)
-        if not match:
-            raise ValueError(f"Could not parse LLM output: `{llm_output}`")
-        action = match.group(1).strip()
-        action_input = match.group(2)
-        # Return the action and action input
-        return AgentAction(tool=action, tool_input=action_input.strip(" ").strip('"'), log=llm_output)
+def get_tools(query: str, tools: List[BaseTool]):
+    docs = retriever.get_relevant_documents(query)
+    return [tools[d.metadata["index"]] for d in docs]
 
 
 query_website_tool = WebpageQATool(qa_chain=load_qa_with_sources_chain(llm))
+
+
+@tool
+def browse_web_page(url: str) -> str:
+    """Verbose way to scrape a whole webpage. Likely to cause issues parsing."""
+    return run_async(async_load_url_with_playwright(url))

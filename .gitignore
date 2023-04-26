@@ -133,3 +133,5 @@ utilities/output/*
 
 .DS_Store
 test_database.json
+
+utilities/output/*
