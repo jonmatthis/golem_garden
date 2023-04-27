@@ -1,5 +1,5 @@
 """ Welcome to the Garden - We're so glad you're here <3 """
-__version__ = "v0.5.0"
+__version__ = "v0.5.1"
 import sys
 from pathlib import Path
 
