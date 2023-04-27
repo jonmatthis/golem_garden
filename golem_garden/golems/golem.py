@@ -5,17 +5,15 @@ from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
+from golem_garden.__main__ import rich_console
+
 load_dotenv()
 
 from langchain import SerpAPIWrapper, WikipediaAPIWrapper, WolframAlphaAPIWrapper
-from rich.console import Console
-
-console = Console()
-
 
 class Golem:
     def __init__(self):
-        console.print("Initializing Golem...")
+        rich_console.print("Initializing Golem...")
         self._serper_search = SerpAPIWrapper(serpapi_api_key=os.environ["SERPER_API_KEY"])
         self._wikipedia_search = WikipediaAPIWrapper()
         self._wolfram_alpha = WolframAlphaAPIWrapper(wolfram_alpha_appid=os.environ["WOLFRAM_ALPHA_APPID"])
@@ -46,6 +44,6 @@ class Golem:
                                        memory=self._memory)
 
     def intake_message(self, message: str):
-        console.print(f"Received message: {message}")
+        rich_console.print(f"Received message: {message}")
         response = self._chain.run(message)
         return response

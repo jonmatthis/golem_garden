@@ -34,7 +34,7 @@ dependencies = [
     "wolframalpha",
     "chromadb",
     "pydantic",
-    "faiss-cpu"
+    "faiss-cpu",
 ]
 requires-python = ">=3.8"
 
