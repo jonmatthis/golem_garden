@@ -5,7 +5,7 @@ from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
-from golem_garden.__main__ import rich_console
+from golem_garden.backend.__main__ import rich_console
 
 load_dotenv()
 

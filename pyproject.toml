@@ -22,21 +22,30 @@ keywords = [
 
 dependencies = [
     "python-dotenv",
-    "openai",
     "toml",
-    "openai",
+    "asyncio",
     "fastapi",
     "uvicorn",
-    "google-search-results",
-    "langchain",
     "rich",
+
+    #langchain et al
+    "langchain",
+    "openai",
+    "google-search-results",
     "wikipedia",
     "wolframalpha",
     "chromadb",
     "pydantic",
     "faiss-cpu",
+
+    #discord bot stuff
+    "py-cord[voice]",
+    "PyNaCl",
+    "aiodns",
+    "brotlipy",
+    "cchardet",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9 , <4"
 
 dynamic = ["version", "description"]
 
@@ -61,4 +70,5 @@ push = true
 
 [project.scripts]
 golem_garden = "golem_garden.__main__:main"
+golem_discord = "golem_garden.discord_bot:bot_main"
 

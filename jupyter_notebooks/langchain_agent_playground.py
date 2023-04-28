@@ -16,9 +16,9 @@ from langchain.tools.file_management.write import WriteFileTool
 from langchain.tools.human.tool import HumanInputRun
 from langchain.vectorstores import FAISS
 
-from golem_garden.prompts import task_completion_prompt_template, CustomPromptTemplate
-from golem_garden.output_parsers.output_parser import CustomOutputParser
-from golem_garden.tools.tools import web_search, process_csv, query_website_tool, get_tools
+from golem_garden import task_completion_prompt_template, CustomPromptTemplate
+from golem_garden.backend.output_parsers import CustomOutputParser
+from golem_garden.backend.tools.tools import web_search, process_csv, query_website_tool, get_tools
 
 load_dotenv()
 os.environ["LANGCHAIN_HANDLER"] = "langchain"
