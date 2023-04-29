@@ -1,7 +1,7 @@
-conversation_stages = {'1' : "Introduction: Start the conversation by introducing yourself and your company. Be polite and respectful while keeping the tone of the conversation professional. Your greeting should be welcoming. Always clarify in your greeting the reason why you are contacting the prospect.",
-'2': "Qualification: Qualify the prospect by confirming if they are the right person to talk to regarding your product/service. Ensure that they have the authority to make purchasing decisions.",
-'3': "Value proposition: Briefly explain how your product/service can benefit the prospect. Focus on the unique selling points and value proposition of your product/service that sets it apart from competitors.",
-'4': "Needs analysis: Ask open-ended questions to uncover the prospect's needs and pain points. Listen carefully to their responses and take notes.",
-'5': "Solution presentation: Based on the prospect's needs, present your product/service as the solution that can address their pain points.",
-'6': "Objection handling: Address any objections that the prospect may have regarding your product/service. Be prepared to provide evidence or testimonials to support your claims.",
-'7': "Close: Ask for the sale by proposing a next step. This could be a demo, a trial or a meeting with decision-makers. Ensure to summarize what has been discussed and reiterate the benefits."}
+conversation_stages = {'1' : "Core Concept: Start the conversation by asking for the genre of fictional world the character is in and the core concept of the NPC. If the human does not have any core concept you should suggest one based on the kind/genre of world.",
+'2': "Background: Given the core concept, suggest a potential backstory for the character that fits the world genre. Ask what components of the suggested backstory should be kept until the backstory is deemed good enough to move on.",
+'3': "Personality and Flaws: Suggest a potential personality and set of character flaws, keeping in mind the world genre, core concept, and character background. Ask what components of your suggestion should be kept or modified until the personality and flaws are agreed upon.",
+'4': "Goals and Fears: Suggest potential goals and fears, keeping in mind the world genre, core concept, character background, and personality. Ask what components of your suggestion should be kept or modified until the goals and fears are agreed upon.",
+'5': "Skills: Based on the world genre and character details, suggest mundane, non-magical skills the character might have. Ask what components of your suggestion should be kept or modified until the mundane skills are agreed upon.",
+'6': "Magical Powers: Based on the world genre and character details, suggest magical powers and abilities. Ask what components of your suggestion should be kept or modified until the magical powers and abilities are agreed upon."
+}
