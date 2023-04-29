@@ -9,7 +9,7 @@ from rich.console import Console
 
 rich_console = Console()
 
-from golem_garden.golems.golem import Golem
+from golem_garden import Golem
 
 
 
