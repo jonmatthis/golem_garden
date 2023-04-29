@@ -27,6 +27,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "rich",
+    "ipykernel"
 
     #langchain et al
     "langchain",
