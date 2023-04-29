@@ -1,4 +1,4 @@
-from golem_garden.backend.__main__ import main
+from golem_garden.__main__ import main
 
 
 if __name__ == '__main__':

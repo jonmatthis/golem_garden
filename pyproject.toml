@@ -38,12 +38,7 @@ dependencies = [
     "pydantic",
     "faiss-cpu",
 
-    #discord bot stuff
-    "py-cord[voice]",
-    "PyNaCl",
-    "aiodns",
-    "brotlipy",
-    "cchardet",
+
 ]
 requires-python = ">=3.9 , <4"
 
