@@ -7,12 +7,3 @@ plugins:
   - mkdocstrings:
       default_handler: python
 
-nav:
-  - Home: index.md
-  - User Guide:
-      - Installation: user_guide/installation.md
-      - Usage: user_guide/usage.md
-  - API Reference: api_reference.md
-  - Development:
-      - Contributing: development/contributing.md
-      - Style Guide: development/style_guide.md
