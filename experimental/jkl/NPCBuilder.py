@@ -16,7 +16,7 @@ from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
 
 
-class StageAnalyzerChain(LLMChain):
+class NPCBuildAnalyzerChain(LLMChain):
     """Chain to analyze which conversation stage should the conversation move into."""
 
     @classmethod
@@ -52,13 +52,13 @@ class StageAnalyzerChain(LLMChain):
 
     
 
-class SalesConversationChain(LLMChain):
+class NPCBuildConversationChain(LLMChain):
     """Chain to generate the next utterance for the conversation."""
 
     @classmethod
     def from_llm(cls, llm: BaseLLM, verbose: bool = True) -> LLMChain:
         """Get the response parser."""
-        sales_agent_inception_prompt = (
+        NPC_builder_agent_inception_prompt = (
         """Never forget your name is {agent_name}. You work as a {agent_role}.
         You strive to create fictional characters that are {idea_values}
         You are conversing with a friend in order to {conversation_purpose}
@@ -82,7 +82,7 @@ class SalesConversationChain(LLMChain):
         """
         )
         prompt = PromptTemplate(
-            template=sales_agent_inception_prompt,
+            template=NPC_builder_agent_inception_prompt,
             input_variables=[
                 "agent_name",
                 "agent_role",
@@ -95,13 +95,13 @@ class SalesConversationChain(LLMChain):
         )
         return cls(prompt=prompt, llm=llm, verbose=verbose)
 
-class SalesGPT(Chain, BaseModel):
-    """Controller model for the Sales Agent."""
+class NPCBuilderGPT(Chain, BaseModel):
+    """Controller model for the NPC Builder Agent."""
 
     conversation_history: List[str] = []
     current_conversation_stage: str = '1'
-    stage_analyzer_chain: StageAnalyzerChain = Field(...)
-    sales_conversation_utterance_chain: SalesConversationChain = Field(...)
+    stage_analyzer_chain: NPCBuildAnalyzerChain = Field(...)
+    NPC_build_conversation_utterance_chain: NPCBuildConversationChain = Field(...)
     conversation_stage_dict: Dict = conversation_stages
 
     agent_name: str = agent_config["agent_name"]
@@ -144,10 +144,10 @@ class SalesGPT(Chain, BaseModel):
         self._call(inputs={})
 
     def _call(self, inputs: Dict[str, Any]) -> None:
-        """Run one step of the sales agent."""
+        """Run one step of the NPC builder agent."""
 
         # Generate agent's utterance
-        ai_message = self.sales_conversation_utterance_chain.run(
+        ai_message = self.NPC_build_conversation_utterance_chain.run(
             agent_name=self.agent_name,
             agent_role=self.agent_role,
             idea_values=self.idea_values,
@@ -166,16 +166,16 @@ class SalesGPT(Chain, BaseModel):
     @classmethod
     def from_llm(
             cls, llm: BaseLLM, verbose: bool = False, **kwargs
-    ) -> "SalesGPT":
-        """Initialize the SalesGPT Controller."""
-        stage_analyzer_chain = StageAnalyzerChain.from_llm(llm, verbose=verbose)
-        sales_conversation_utterance_chain = SalesConversationChain.from_llm(
+    ) -> "NPCBuilderGPT":
+        """Initialize the NPCBuilderGPT Controller."""
+        stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(llm, verbose=verbose)
+        NPC_build_conversation_utterance_chain = NPCBuildConversationChain.from_llm(
             llm, verbose=verbose
         )
 
         return cls(
             stage_analyzer_chain=stage_analyzer_chain,
-            sales_conversation_utterance_chain=sales_conversation_utterance_chain,
+            NPC_build_conversation_utterance_chain=NPC_build_conversation_utterance_chain,
             verbose=verbose,
             **kwargs,
         )
@@ -188,18 +188,18 @@ def main():
 
     llm = ChatOpenAI(model="gpt-4", temperature=0.9)
 
-    sales_agent = SalesGPT.from_llm(llm, verbose=False, **agent_config)
-    sales_agent.seed_agent()
+    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, **agent_config)
+    NPC_builder_agent.seed_agent()
 
 
     while True:
-        sales_agent.step()
+        NPC_builder_agent.step()
         print("\n---\n")
         human_response = input("Enter your response, or 'QUIT' to cancel:")
-        if human_response == 'QUIT':
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
             break
-        sales_agent.human_step(human_response)
-        sales_agent.determine_conversation_stage()
+        NPC_builder_agent.human_step(human_response)
+        NPC_builder_agent.determine_conversation_stage()
 
 
     return
