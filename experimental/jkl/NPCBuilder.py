@@ -61,7 +61,7 @@ class NPCBuildConversationChain(LLMChain):
         Your means of holding the conversation is via {conversation_type}
 
         Keep your responses of short length to retain the user's attention. Never produce lists, keep your answers conversational.
-        You must respond according to the conversation history while answering the current question in the conversation for building the {idea_type}}. 
+        You must respond according to the conversation history while answering the current question in the conversation for building the {idea_type}. 
         Only generate one response at a time! When you are done generating, end with '<END_OF_TURN>' to give the user a chance to respond. 
         Example:
         Conversation history: 
@@ -83,6 +83,7 @@ class NPCBuildConversationChain(LLMChain):
                 "agent_name",
                 "agent_role",
                 "idea_values",
+                "idea_type",
                 "conversation_purpose",
                 "conversation_type",
                 "conversation_stage",
@@ -104,6 +105,7 @@ class NPCBuilderGPT(Chain, BaseModel):
     agent_name: str = ""
     agent_role: str = ""
     idea_values: str = ""
+    idea_type: str = ""
     conversation_purpose: str = ""
     conversation_type: str = ""
 
@@ -130,7 +132,7 @@ class NPCBuilderGPT(Chain, BaseModel):
 
         self.current_conversation_stage = self.retrieve_conversation_stage(conversation_stage_id)
 
-        print(f"Conversation Stage: {self.current_conversation_stage}")
+        return self.current_conversation_stage
 
     def human_step(self, human_input):
         # process human input
@@ -138,15 +140,16 @@ class NPCBuilderGPT(Chain, BaseModel):
         self.conversation_history.append(human_input)
 
     def step(self):
-        self._call(inputs={})
+        return self._call(inputs={})
 
-    def _call(self, inputs: Dict[str, Any]) -> None:
+    def _call(self, inputs: Dict[str, Any]) -> str:
         """Run one step of the NPC builder agent."""
 
         # Generate agent's utterance
         ai_message = self.NPC_build_conversation_utterance_chain.run(
             agent_name=self.agent_name,
             agent_role=self.agent_role,
+            idea_type=self.idea_type,
             idea_values=self.idea_values,
             conversation_purpose=self.conversation_purpose,
             conversation_history="\n".join(self.conversation_history),
@@ -157,8 +160,8 @@ class NPCBuilderGPT(Chain, BaseModel):
         # Add agent's response to conversation history
         self.conversation_history.append(ai_message)
 
-        print(f'{self.agent_name}: ', ai_message.rstrip('<END_OF_TURN>'))
-        return {}
+        return ai_message.rstrip('<END_OF_TURN>')
+
 
     def set_from_config(self, agent_config):
         print()
@@ -166,6 +169,7 @@ class NPCBuilderGPT(Chain, BaseModel):
 
         self.agent_name: str = agent_config["agent_name"]
         self.agent_role: str = agent_config["agent_role"]
+        self.idea_type: str = agent_config["idea_type"]
         self.idea_values: str = agent_config["idea_values"]
         self.conversation_purpose: str = agent_config["conversation_purpose"]
         self.conversation_type: str = agent_config["conversation_type"]
@@ -194,27 +198,39 @@ class NPCBuilderGPT(Chain, BaseModel):
 
 
 def main():
-    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/world_weaver.config"
+    print("butts")
 
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
     agent_definition=toml.load(path)
     print(agent_definition)
     print(toml.dumps(agent_definition))
-    print("butts")
+
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/bill_dworld.config"
+    agent_definition2 = toml.load(path2)
+    print(agent_definition2)
+    print(toml.dumps(agent_definition2))
 
     llm = ChatOpenAI(model="gpt-4", temperature=0.9)
 
     NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
     NPC_builder_agent.seed_agent()
 
+    NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition2)
+    NPC_builder_agent2.seed_agent()
 
-    while True:
-        NPC_builder_agent.step()
+    while False:
+        print(NPC_builder_agent.step())
         print("\n---\n")
         human_response = input("Enter your response, or 'QUIT' to cancel:")
         if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
             break
         NPC_builder_agent.human_step(human_response)
-        NPC_builder_agent.determine_conversation_stage()
+        print("\n---\n")
+        print("\n---\n")
+        print(NPC_builder_agent.determine_conversation_stage())
+        print("\n---\n")
+
+    while True:
 
 
     return
