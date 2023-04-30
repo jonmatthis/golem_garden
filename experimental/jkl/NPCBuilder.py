@@ -1,3 +1,6 @@
+# TODO: Need to get this into an Agent form
+# TODO: IO tools, blobs for people, then index and embeddings
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -134,10 +137,10 @@ class NPCBuilderGPT(Chain, BaseModel):
 
         return self.current_conversation_stage
 
-    def human_step(self, human_input):
+    def input_step(self, input):
         # process human input
-        human_input = human_input + '<END_OF_TURN>'
-        self.conversation_history.append(human_input)
+        input = input + '<END_OF_TURN>'
+        self.conversation_history.append(input)
 
     def step(self):
         return self._call(inputs={})
@@ -200,12 +203,13 @@ class NPCBuilderGPT(Chain, BaseModel):
 def main():
     print("butts")
 
-    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
+    # path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
     agent_definition=toml.load(path)
     print(agent_definition)
     print(toml.dumps(agent_definition))
 
-    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/bill_dworld.config"
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
     agent_definition2 = toml.load(path2)
     print(agent_definition2)
     print(toml.dumps(agent_definition2))
@@ -224,13 +228,31 @@ def main():
         human_response = input("Enter your response, or 'QUIT' to cancel:")
         if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
             break
-        NPC_builder_agent.human_step(human_response)
+        NPC_builder_agent.input_step(human_response)
         print("\n---\n")
         print("\n---\n")
         print(NPC_builder_agent.determine_conversation_stage())
         print("\n---\n")
 
     while True:
+        guy_a_says = NPC_builder_agent.step()
+        print(guy_a_says)
+        print("\n------\n")
+        NPC_builder_agent2.input_step(guy_a_says)
+        #print(NPC_builder_agent2.determine_conversation_stage())
+        #print("\n------\n")
+        guy_b_says = NPC_builder_agent2.step()
+        print(guy_b_says)
+        #print("\n------\n")
+        NPC_builder_agent.input_step(guy_b_says)
+        #print(NPC_builder_agent.determine_conversation_stage())
+        print("\n------\n")
+
+        human_response = input("Enter your response, or 'QUIT' to cancel:")
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
+            break
+        NPC_builder_agent.input_step(human_response)
+        NPC_builder_agent2.input_step(human_response)
 
 
     return
