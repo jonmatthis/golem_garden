@@ -195,7 +195,9 @@ class NPCBuilderGPT(Chain, BaseModel):
 
 
 def main():
-    agent_definition=toml.load("experimental/jkl/agent_definitions/enpisi.config")
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
+
+    agent_definition=toml.load(path)
     print(agent_definition)
     print(toml.dumps(agent_definition))
     print("butts")
