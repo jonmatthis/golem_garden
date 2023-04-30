@@ -1,11 +1,8 @@
 import os
 from dotenv import load_dotenv
-
-from experimental.jkl.agent_config import agent_config
-from experimental.jkl.conversation_stages import conversation_stages
-
 load_dotenv()
 
+import toml
 
 from typing import Dict, List, Any
 
@@ -20,7 +17,7 @@ class NPCBuildAnalyzerChain(LLMChain):
     """Chain to analyze which conversation stage should the conversation move into."""
 
     @classmethod
-    def from_llm(cls, llm: BaseLLM, verbose: bool = True) -> LLMChain:
+    def from_llm(cls, llm: BaseLLM, verbose: bool = True, agent_config = None) -> LLMChain:
         """Get the response parser."""
         stage_analyzer_inception_prompt_template = (
             """You are an rpg gamemaster helping your friend to determine what information and characteristics of a fictional character being discussed need to be figured out, and what questions about the character should be answered next.
@@ -56,7 +53,7 @@ class NPCBuildConversationChain(LLMChain):
     """Chain to generate the next utterance for the conversation."""
 
     @classmethod
-    def from_llm(cls, llm: BaseLLM, verbose: bool = True) -> LLMChain:
+    def from_llm(cls, llm: BaseLLM, verbose: bool = True, agent_config = None) -> LLMChain:
         """Get the response parser."""
         NPC_builder_agent_inception_prompt = (
         """Never forget your name is {agent_name}. You work as a {agent_role}.
@@ -102,13 +99,14 @@ class NPCBuilderGPT(Chain, BaseModel):
     current_conversation_stage: str = '1'
     stage_analyzer_chain: NPCBuildAnalyzerChain = Field(...)
     NPC_build_conversation_utterance_chain: NPCBuildConversationChain = Field(...)
-    conversation_stage_dict: Dict = conversation_stages
 
-    agent_name: str = agent_config["agent_name"]
-    agent_role: str = agent_config["agent_role"]
-    idea_values: str = agent_config["idea_values"]
-    conversation_purpose: str = agent_config["conversation_purpose"]
-    conversation_type: str = agent_config["conversation_type"]
+    conversation_stage_dict: Dict = {}
+
+    agent_name: str = ""
+    agent_role: str = ""
+    idea_values: str = ""
+    conversation_purpose: str = ""
+    conversation_type: str = ""
 
     def retrieve_conversation_stage(self, key):
         return self.conversation_stage_dict.get(key, '1')
@@ -163,32 +161,48 @@ class NPCBuilderGPT(Chain, BaseModel):
         print(f'{self.agent_name}: ', ai_message.rstrip('<END_OF_TURN>'))
         return {}
 
+    def set_from_config(self, agent_config):
+        print()
+        self.conversation_stage_dict: Dict = agent_config["conversation_stages"]
+
+        self.agent_name: str = agent_config["agent_name"]
+        self.agent_role: str = agent_config["agent_role"]
+        self.idea_values: str = agent_config["idea_values"]
+        self.conversation_purpose: str = agent_config["conversation_purpose"]
+        self.conversation_type: str = agent_config["conversation_type"]
+
     @classmethod
     def from_llm(
-            cls, llm: BaseLLM, verbose: bool = False, **kwargs
+            cls, llm: BaseLLM, verbose: bool = False, agent_config = None, **kwargs
     ) -> "NPCBuilderGPT":
         """Initialize the NPCBuilderGPT Controller."""
-        stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(llm, verbose=verbose)
+        stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(llm, verbose=verbose, agent_config = agent_config)
         NPC_build_conversation_utterance_chain = NPCBuildConversationChain.from_llm(
-            llm, verbose=verbose
+            llm, verbose=verbose, agent_config= agent_config
         )
 
-        return cls(
+        new_instance = cls(
             stage_analyzer_chain=stage_analyzer_chain,
             NPC_build_conversation_utterance_chain=NPC_build_conversation_utterance_chain,
             verbose=verbose,
+            agent_config=agent_config,
             **kwargs,
         )
+        new_instance.set_from_config(agent_config)
+
+        return new_instance
+
 
 
 def main():
-    print(conversation_stages)
-    print(agent_config)
+    agent_definition=toml.load("agent_definitions/enpisi.config")
+    print(agent_definition)
+    print(toml.dumps(agent_definition))
     print("butts")
 
     llm = ChatOpenAI(model="gpt-4", temperature=0.9)
 
-    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, **agent_config)
+    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
     NPC_builder_agent.seed_agent()
 
 
