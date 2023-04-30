@@ -75,6 +75,9 @@ class NPCBuildConversationChain(LLMChain):
         User: Hello {agent_name}! That sounds fun, where do we start? <END_OF_TURN>
         {agent_name}:
         End of example.
+        
+        When the converation is finished, produce a summary of the final version in the following format:
+        
 
         Current conversation stage: 
         {conversation_stage}
@@ -225,7 +228,7 @@ def main():
     NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition2)
     NPC_builder_agent2.seed_agent()
 
-    while True:
+    while False:
         print(NPC_builder_agent.step())
         print("\n---\n")
         human_response = input("Enter your response, or 'QUIT' to cancel:")
@@ -237,7 +240,7 @@ def main():
         print(NPC_builder_agent.determine_conversation_stage())
         print("\n---\n")
 
-    while False:
+    while True:
         guy_a_says = NPC_builder_agent.step()
         print(guy_a_says)
         print("\n------\n")
