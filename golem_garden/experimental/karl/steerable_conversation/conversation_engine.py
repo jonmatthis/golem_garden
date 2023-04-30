@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from golem_garden.experimental.jkl.NPCBuilder import NPCBuilderGPT
+from golem_garden.experimental.Builder.NPCBuilder import NPCBuilderGPT
 
 load_dotenv()
 
