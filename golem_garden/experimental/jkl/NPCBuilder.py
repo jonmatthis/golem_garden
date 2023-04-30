@@ -25,6 +25,7 @@ class NPCBuildAnalyzerChain(LLMChain):
 
         task_preamble_str = agent_config["analyzer_preamble"].strip("\"")
         conversation_stages_str = toml.dumps(agent_config["conversation_stages"]).strip('\"')
+        conversation_stages_priority_str = agent_config["conversation_stages_priority"]
         
         stage_analyzer_inception_prompt_template = (task_preamble_str + 
             """
@@ -38,10 +39,12 @@ class NPCBuildAnalyzerChain(LLMChain):
             Now determine what should be the next immediate question topic for your friend in the conversation by selecting only from the following options:"""+ 
             conversation_stages_str +            
             """
-            Only answer with a number between 1 through """ + str(len(agent_config["conversation_stages"])) +  """ with a best guess of what topic should be covered next in the conversation. Prioritize 
-            The answer needs to be one number only, no words.
+            Only answer with a number between 1 through """ + str(len(agent_config["conversation_stages"])) +  """ with a best guess of what topic should be covered next in the conversation.\n""" + 
+            conversation_stages_priority_str + 
+            """The answer needs to be one number only, no words.
             If there is no conversation history, output 1.
-            Do not answer anything else nor add anything to you answer."""
+            Do not answer anything else nor add anything to you answer.           
+            """
             )
         prompt = PromptTemplate(
             template=stage_analyzer_inception_prompt_template,
@@ -72,6 +75,9 @@ class NPCBuildConversationChain(LLMChain):
         User: Hello {agent_name}! That sounds fun, where do we start? <END_OF_TURN>
         {agent_name}:
         End of example.
+        
+        When the converation is finished, produce a summary of the final version in the following format:
+        
 
         Current conversation stage: 
         {conversation_stage}
