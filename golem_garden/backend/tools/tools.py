@@ -10,7 +10,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.tools import BaseTool
 from pydantic import Field
 
-from golem_garden.backend.data_loaders import async_load_url_with_playwright
+from golem_garden.backend.langchain_stuff.data_loaders import async_load_url_with_playwright
 
 
 def _get_text_splitter():
