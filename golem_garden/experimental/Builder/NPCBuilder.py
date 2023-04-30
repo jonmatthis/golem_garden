@@ -15,6 +15,7 @@ from langchain.llms import BaseLLM
 from pydantic import BaseModel, Field
 from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
+from memory_util import VectorStoreMemoryWrapper
 
 
 class NPCBuildAnalyzerChain(LLMChain):
@@ -87,6 +88,7 @@ class NPCBuildConversationChain(LLMChain):
         {agent_name}: 
         """
         )
+        
         prompt = PromptTemplate(
             template=NPC_builder_agent_inception_prompt,
             input_variables=[
@@ -110,6 +112,7 @@ class NPCBuilderGPT(Chain, BaseModel):
     current_conversation_stage: str = '1'
     stage_analyzer_chain: NPCBuildAnalyzerChain = Field(...)
     NPC_build_conversation_utterance_chain: NPCBuildConversationChain = Field(...)
+    memory_wrapper: VectorStoreMemoryWrapper = VectorStoreMemoryWrapper()
 
     conversation_stage_dict: Dict = {}
 
@@ -195,7 +198,7 @@ class NPCBuilderGPT(Chain, BaseModel):
         """Initialize the NPCBuilderGPT Controller."""
         stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(analyzer_llm, verbose=verbose, agent_config = agent_config)
         NPC_build_conversation_utterance_chain = NPCBuildConversationChain.from_llm(
-            conversation_llm, verbose=verbose, agent_config= agent_config
+            conversation_llm, verbose=verbose, memory=cls.memory_wrapper, agent_config= agent_config
         )
 
         new_instance = cls(
