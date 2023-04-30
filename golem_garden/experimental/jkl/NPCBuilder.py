@@ -7,7 +7,7 @@ load_dotenv()
 
 import toml
 
-from typing import Dict, List, Any, Callable
+from typing import Dict, List, Any
 
 from langchain import LLMChain, PromptTemplate
 from langchain.llms import BaseLLM
@@ -199,66 +199,63 @@ class NPCBuilderGPT(Chain, BaseModel):
         return new_instance
 
 
-class ConversationEngine:
-    def __init__(self, poll_func: Callable[[], int], publish_func: Callable[[int], None], model_name  = 'gpt-3.5-turbo'):
-
-        agents = ['/enpisi.config', '/enpisi.config']
-        llm = ChatOpenAI(model=model_name, temperature=0.9)
-
-        self.agent_1, self.agent_2 = [agent_from_config_path(path, llm = llm)  for path in agents]
-
-        self.publish = publish_func
-
-        self.poll = poll_func
-
-    def begin(self):
-
-        while True:
-            
-            message_1 = self.agent_1.step()
-            self.publish(message_1)
-            self.agent_2.input_step(message_1)
-
-            message_2 = self.agent_2.step()
-            self.publish(message_2)
-            self.agent_1.input_step(message_2)
-               
-            human_response = self.poll()
-            if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
-                break
-            elif human_response=='':
-                pass
-            else:
-                self.agent_1.input_step(human_response)
-                self.agent_2.input_step(human_response)
-
-
-
-def agent_from_config_path(config_path, llm):
-    path = os.path.dirname(os.path.realpath(__file__)) + config_path
-    agent_definition=toml.load(path)
-
-    agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
-    agent.seed_agent()
-
-    return agent
-
-def poll_func():
-
-    user_input = input("Enter your response, or 'QUIT' to cancel:")
-
-    return user_input
-
-def publish_func(msg):
-    print(msg)
 
 def main():
     print("butts")
 
-    conversation_engine = ConversationEngine(poll_func, publish_func, model_name = 'gpt-3.5-turbo')
+    # path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/karls_enpisi.config"
+    agent_definition=toml.load(path)
+    print(agent_definition)
+    print(toml.dumps(agent_definition))
+
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/karls_enpisi.config"
+    agent_definition2 = toml.load(path2)
+    print(agent_definition2)
+    print(toml.dumps(agent_definition2))
+
+    llm = ChatOpenAI(model="gpt-4", temperature=0.9)
+
+    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
+    NPC_builder_agent.seed_agent()
+
+    NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition2)
+    NPC_builder_agent2.seed_agent()
+
+    while False:
+        print(NPC_builder_agent.step())
+        print("\n---\n")
+        human_response = input("Enter your response, or 'QUIT' to cancel:")
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
+            break
+        NPC_builder_agent.input_step(human_response)
+        print("\n---\n")
+        print("\n---\n")
+        print(NPC_builder_agent.determine_conversation_stage())
+        print("\n---\n")
+
+    while True:
+        guy_a_says = NPC_builder_agent.step()
+        print(guy_a_says)
+        print("\n------\n")
+        NPC_builder_agent2.input_step(guy_a_says)
+        #print(NPC_builder_agent2.determine_conversation_stage())
+        #print("\n------\n")
+        guy_b_says = NPC_builder_agent2.step()
+        print(guy_b_says)
+        #print("\n------\n")
+        NPC_builder_agent.input_step(guy_b_says)
+        #print(NPC_builder_agent.determine_conversation_stage())
+        print("\n------\n")
+
+        human_response = input("Enter your response, or 'QUIT' to cancel:")
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
+            break
+        NPC_builder_agent.input_step(human_response)
+        NPC_builder_agent2.input_step(human_response)
 
 
-    conversation_engine.begin()
+    return
 
 
 if __name__ == '__main__':
