@@ -17,8 +17,8 @@ from langchain.tools.human.tool import HumanInputRun
 from langchain.vectorstores import FAISS
 
 from golem_garden import task_completion_prompt_template, CustomPromptTemplate
-from golem_garden.backend.output_parsers import CustomOutputParser
-from golem_garden.backend.tools import web_search, process_csv, query_website_tool, get_tools
+from golem_garden.backend.langchain_stuff.output_parsers import CustomOutputParser
+from golem_garden.backend.langchain_stuff.tools import web_search, process_csv, query_website_tool, get_tools
 
 load_dotenv()
 os.environ["LANGCHAIN_HANDLER"] = "langchain"
