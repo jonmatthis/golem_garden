@@ -2,6 +2,8 @@
 # TODO: IO tools, blobs for people, then index and embeddings
 
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 from golem_garden.experimental.jkl.NPCBuilder import NPCBuilderGPT
@@ -12,18 +14,15 @@ import toml
 
 from typing import Dict, List, Any, Callable
 
-from langchain import LLMChain, PromptTemplate
-from langchain.llms import BaseLLM
-from pydantic import BaseModel, Field
-from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
 
+agent_enpisi_config_path = str(Path(__file__).parent.parent.parent / "jkl" / "agent_definition" / "enpisi.config")
 
 class ConversationEngine:
     def __init__(self,
                  poll_func: Callable[[], int],
                  publish_func: Callable[[int], None],
-                 agents=['/karls_enpisi.config', '/karls_enpisi.config'],
+                 agents: list,
                  model_name  = 'gpt-3.5-turbo'):
 
         self.agents = agents
@@ -77,5 +76,8 @@ def publish_func(msg):
 
 
 if __name__ == '__main__':
-    conversation_engine = ConversationEngine(poll_func, publish_func, model_name='gpt-3.5-turbo')
+    conversation_engine = ConversationEngine(poll_func,
+                                             publish_func,
+                                             agents=[ agent_enpisi_config_path, agent_enpisi_config_path],
+                                             model_name='gpt-3.5-turbo')
     conversation_engine.begin()
