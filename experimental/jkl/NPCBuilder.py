@@ -194,7 +194,7 @@ class NPCBuilderGPT(Chain, BaseModel):
 
 
 def main():
-    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/world_weaver.config"
 
     agent_definition=toml.load(path)
     print(agent_definition)
