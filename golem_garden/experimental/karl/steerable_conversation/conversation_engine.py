@@ -23,7 +23,7 @@ agent_list = [agent_enpisi_config_path, agent_enpisi_config_path]
 def agent_from_config_path(config_path, llm):
     agent_definition = toml.load(config_path)
 
-    agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
+    agent = NPCBuilderGPT.from_llm(llm, llm, verbose=False, agent_config=agent_definition)
     agent.seed_agent()
 
     return agent
@@ -55,6 +55,21 @@ class ConversationEngine:
 
         self.poll = poll_func
 
+    def step(self, human_message = ''):
+
+        if human_message!='':
+            self.agent_1.input_step(human_message)
+            self.agent_2.input_step(human_message)
+
+        message_1 = self.agent_1.step()
+        self.publish(message_1)
+        self.agent_2.input_step(message_1)
+
+        message_2 = self.agent_2.step()
+        self.publish(message_2)
+        self.agent_1.input_step(message_2)
+
+
     def begin(self):
 
         while True:
@@ -84,4 +99,13 @@ if __name__ == '__main__':
                                              publish_func,
                                              agents=agent_list,
                                              model_name='gpt-3.5-turbo')
-    conversation_engine.begin()
+    
+    conversation_engine.step()
+
+    while True:
+        human_response = input("Enter your response, or 'QUIT' to cancel:")
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
+            break
+        conversation_engine.step(human_response)
+
+
