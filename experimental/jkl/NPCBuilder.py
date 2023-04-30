@@ -23,8 +23,7 @@ class NPCBuildAnalyzerChain(LLMChain):
         task_preamble_str = agent_config["analyzer_preamble"].strip("\"")
         conversation_stages_str = toml.dumps(agent_config["conversation_stages"]).strip('\"')
         
-        stage_analyzer_inception_prompt_template = (
-            task_preamble_str + 
+        stage_analyzer_inception_prompt_template = (task_preamble_str + 
             """
             Following '===' is the conversation history. 
             Use this conversation history to make your decision.
@@ -57,16 +56,16 @@ class NPCBuildConversationChain(LLMChain):
         """Get the response parser."""
         NPC_builder_agent_inception_prompt = (
         """Never forget your name is {agent_name}. You work as a {agent_role}.
-        You strive to create fictional characters that are {idea_values}
+        You strive to create {idea_type}s that are {idea_values}
         You are conversing with a friend in order to {conversation_purpose}
         Your means of holding the conversation is via {conversation_type}
 
         Keep your responses of short length to retain the user's attention. Never produce lists, keep your answers conversational.
-        You must respond according to the conversation history while answering the current question in the conversation for building the character. 
+        You must respond according to the conversation history while answering the current question in the conversation for building the {idea_type}}. 
         Only generate one response at a time! When you are done generating, end with '<END_OF_TURN>' to give the user a chance to respond. 
         Example:
         Conversation history: 
-        {agent_name}: Hello! This is {agent_name}. Let's make a character together. <END_OF_TURN>
+        {agent_name}: Hello! This is {agent_name}. Let's make a {idea_type} together. <END_OF_TURN>
         User: Hello {agent_name}! That sounds fun, where do we start? <END_OF_TURN>
         {agent_name}:
         End of example.
