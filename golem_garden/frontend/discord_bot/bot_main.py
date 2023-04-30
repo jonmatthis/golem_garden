@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 class AgentCog(discord.Cog):
     def __init__(self, bot:discord.Bot):
         self._bot = bot
-        # self._conversation_engine = ConversationEngine(poll_func=self.)
-        self._active_chats = {}
+        self._conversation_engine = ConversationEngine(publish_func=self._publish_message)
+        self._active_chat = {}
         self._golem = Golem()
 
 
@@ -34,18 +34,17 @@ class AgentCog(discord.Cog):
 
 
         message_thread = await ctx.send(embed=message_embed)
-        thread = await message_thread.create_thread(
+
+        self._active_chat["thread"] = await message_thread.create_thread(
             name=ctx.user.name + "'s conversation with GPT"
         )
-        new_chat = {}
-        new_chat["thread"] = thread
-        new_chat["owner"] = ctx.user.id
 
-        self._active_chats[ctx.user.id] = new_chat
+        self._active_chat["owner"] = ctx.user.id
+
 
         await ctx.respond("Conversation started.")
-        await thread.send(f"<@{str(ctx.user.id)}> is the thread owner.")
-        await thread.send(self._golem)
+        await self._active_chat["thread"].send(f"<@{str(ctx.user.id)}> is the thread owner.")
+        await self._active_chat["thread"].send(self._golem.intake_message("Say hello to yr friend"))
 
     @discord.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -53,7 +52,24 @@ class AgentCog(discord.Cog):
         if message.author.id == self._bot.user.id:
             return
 
-        logger.info(f"Received message: {message}")
+
+        if not message.channel.id == self._active_chat["thread"].id:
+            return
+
+        if not message.author.id == self._active_chat["owner"]:
+            return
+
+        logger.info(f"Sending message to the agent: {message.content}")
+        await self._conversation_engine.step(message.content)
+        # await self._active_chat["thread"].send(self._golem.intake_message(message.content))
+
+
+    async def _publish_message(self, message):
+        try:
+            await self._active_chat["thread"].send(message)
+        except Exception as e:
+            logger.error(f"Error posting message: {e}")
+
 
 
 

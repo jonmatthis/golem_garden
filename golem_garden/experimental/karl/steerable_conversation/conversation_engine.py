@@ -1,7 +1,6 @@
 # TODO: Need to get this into an Agent form
 # TODO: IO tools, blobs for people, then index and embeddings
 
-import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -41,8 +40,8 @@ def publish_func(msg):
 
 class ConversationEngine:
     def __init__(self,
-                 poll_func: Callable[[], int] = poll_func,
-                 publish_func: Callable[[int], None] = publish_func,
+                 poll_func: Callable[[], int] = None,
+                 publish_func: Callable[[str], None] = None,
                  agents: list = agent_list,
                  model_name='gpt-3.5-turbo'):
 
@@ -51,24 +50,47 @@ class ConversationEngine:
 
         self.agent_1, self.agent_2 = [agent_from_config_path(path, llm=llm) for path in self.agents]
 
+        self._tell_agents_to_collaborate()
+
         self.publish = publish_func
 
         self.poll = poll_func
 
-    def step(self, human_message = ''):
+    def _tell_agents_to_collaborate(self):
+        collaboration_message = "You are going to be working with another agent to work with the human to complete the task."
+        self.agent_1.input_step(collaboration_message)
+        self.agent_2.input_step(collaboration_message)
+        self._previous_message_1 = ''
+        self._previous_message_2 = ''
 
-        if human_message!='':
-            self.agent_1.input_step(human_message)
-            self.agent_2.input_step(human_message)
+    async def step(self, human_message=''):
 
-        message_1 = self.agent_1.step()
-        self.publish(message_1)
-        self.agent_2.input_step(message_1)
+        if human_message != 'pass':
+            if self._previous_message_1 == '':
+                self.agent_1.input_step(f"You're going first! The human said{human_message}")
+            else:
+                self.agent_1.input_step(
+                    f"The other agent said: {self._previous_message_2}, the human said{human_message} - collaborate!")
+        else:
+            self.agent_1.input_step(f"The other agent said: {self._previous_message_2} - the human doesn't have input this step- collaborate!")
 
-        message_2 = self.agent_2.step()
-        self.publish(message_2)
-        self.agent_1.input_step(message_2)
 
+        await self.publish(f"Agent 1 says:")
+        self._previous_message_1 = self.agent_1.step()
+        await self.publish(self._previous_message_1)
+        self.agent_2.input_step(self._previous_message_1)
+
+
+        if human_message != 'pass':
+            self.agent_2.input_step(
+                    f"The other agent said: {self._previous_message_1}, the human said{human_message} - collaborate!")
+        else:
+            self.agent_2.input_step(f"The other agent said: {self._previous_message_1} - the human doesn't have input this step - collaborate!")
+
+        await self.publish(f"Agent 2 says:")
+        self._previous_message_2 = self.agent_2.step()
+        await self.publish(self._previous_message_2)
+        self.agent_1.input_step(self._previous_message_2)
 
     def begin(self):
 
@@ -99,13 +121,12 @@ if __name__ == '__main__':
                                              publish_func,
                                              agents=agent_list,
                                              model_name='gpt-3.5-turbo')
-    
+
     conversation_engine.step()
 
     while True:
         human_response = input("Enter your response, or 'QUIT' to cancel:")
-        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (human_response == 'Q'):
+        if (human_response == 'QUIT') or (human_response == 'quit') or (human_response == 'q') or (
+                human_response == 'Q'):
             break
         conversation_engine.step(human_response)
-
-
