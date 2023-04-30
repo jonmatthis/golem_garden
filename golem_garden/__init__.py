@@ -7,4 +7,3 @@ base_package_path = Path(__file__).parent.parent
 sys.path.insert(0, str(base_package_path))  # add parent directory to sys.path
 
 
-from golem_garden.golems.golem import Golem

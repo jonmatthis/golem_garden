@@ -39,6 +39,7 @@ class Golem:
             )
         ]
         self._memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        self._index = None
         self._llm = ChatOpenAI(temperature=.8, model_name="gpt-4")
         self._chain = initialize_agent(self._tools,
                                        self._llm,

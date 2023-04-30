@@ -22,7 +22,7 @@ task: {input}
 {agent_scratchpad}"""
 
 
-class CustomPromptTemplate(StringPromptTemplate):
+class CustomMultiActionPromptTemplate(StringPromptTemplate):
     # The template to use
     template: str
 
