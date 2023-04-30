@@ -76,8 +76,8 @@ class NPCBuildConversationChain(LLMChain):
         {agent_name}:
         End of example.
         
-        When the converation is finished, produce a summary of the final version in the following format:
-        
+        When the conversation is finished, produce a summary of the final version in the following format:
+        {output_format}        
 
         Current conversation stage: 
         {conversation_stage}
@@ -96,7 +96,8 @@ class NPCBuildConversationChain(LLMChain):
                 "conversation_purpose",
                 "conversation_type",
                 "conversation_stage",
-                "conversation_history"
+                "conversation_history",
+                "output_format"
             ],
         )
         return cls(prompt=prompt, llm=llm, verbose=verbose)
@@ -117,6 +118,7 @@ class NPCBuilderGPT(Chain, BaseModel):
     idea_type: str = ""
     conversation_purpose: str = ""
     conversation_type: str = ""
+    output_format: str = ""
 
     def retrieve_conversation_stage(self, key):
         return self.conversation_stage_dict.get(key, '1')
@@ -163,7 +165,8 @@ class NPCBuilderGPT(Chain, BaseModel):
             conversation_purpose=self.conversation_purpose,
             conversation_history="\n".join(self.conversation_history),
             conversation_stage=self.current_conversation_stage,
-            conversation_type=self.conversation_type
+            conversation_type=self.conversation_type,
+            output_format=self.output_format
         )
 
         # Add agent's response to conversation history
@@ -182,6 +185,7 @@ class NPCBuilderGPT(Chain, BaseModel):
         self.idea_values: str = agent_config["idea_values"]
         self.conversation_purpose: str = agent_config["conversation_purpose"]
         self.conversation_type: str = agent_config["conversation_type"]
+        self.output_format: str = agent_config["output_format"]
 
     @classmethod
     def from_llm(
@@ -210,12 +214,12 @@ def main():
     print("butts")
 
     # path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
-    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/karls_enpisi.config"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
     agent_definition=toml.load(path)
     print(agent_definition)
     print(toml.dumps(agent_definition))
 
-    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/karls_enpisi.config"
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
     agent_definition2 = toml.load(path2)
     print(agent_definition2)
     print(toml.dumps(agent_definition2))
