@@ -1,6 +1,6 @@
 # TODO: Need to get this into an Agent form
 # TODO: IO tools, blobs for people, then index and embeddings
-# TODO: Get two LLMs, one 3.5 for the simple boy, and 4 for the main conversation agent
+# TODO: get agents to comprehend their own name in the chat history transcript
 
 import os
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ from langchain.llms import BaseLLM
 from pydantic import BaseModel, Field
 from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
-from memory_util import VectorStoreMemoryWrapper
+from golem_garden.experimental.Builder.memory_util import VectorStoreMemoryWrapper
 from langchain.memory import VectorStoreRetrieverMemory
 
 
