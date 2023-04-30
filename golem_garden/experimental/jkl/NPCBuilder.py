@@ -1,5 +1,6 @@
 # TODO: Need to get this into an Agent form
 # TODO: IO tools, blobs for people, then index and embeddings
+# TODO: Get two LLMs, one 3.5 for the simple boy, and 4 for the main conversation agent
 
 import os
 from dotenv import load_dotenv
@@ -189,12 +190,12 @@ class NPCBuilderGPT(Chain, BaseModel):
 
     @classmethod
     def from_llm(
-            cls, llm: BaseLLM, verbose: bool = False, agent_config = None, **kwargs
+            cls, conversation_llm: BaseLLM, analyzer_llm: BaseLLM, verbose: bool = False, agent_config = None, **kwargs
     ) -> "NPCBuilderGPT":
         """Initialize the NPCBuilderGPT Controller."""
-        stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(llm, verbose=verbose, agent_config = agent_config)
+        stage_analyzer_chain = NPCBuildAnalyzerChain.from_llm(analyzer_llm, verbose=verbose, agent_config = agent_config)
         NPC_build_conversation_utterance_chain = NPCBuildConversationChain.from_llm(
-            llm, verbose=verbose, agent_config= agent_config
+            conversation_llm, verbose=verbose, agent_config= agent_config
         )
 
         new_instance = cls(
@@ -225,11 +226,12 @@ def main():
     print(toml.dumps(agent_definition2))
 
     llm = ChatOpenAI(model="gpt-4", temperature=0.9)
+    llm2 = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
 
-    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition)
+    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, llm2, verbose=False, agent_config=agent_definition)
     NPC_builder_agent.seed_agent()
 
-    NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, verbose=False, agent_config=agent_definition2)
+    NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, llm2, verbose=False, agent_config=agent_definition2)
     NPC_builder_agent2.seed_agent()
 
     while False:
