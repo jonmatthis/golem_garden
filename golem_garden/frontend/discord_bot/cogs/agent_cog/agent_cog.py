@@ -69,7 +69,8 @@ class AgentCog(discord.Cog):
         logger.info(f"Sending message to the agent: {message.content}")
 
         await self._active_chat["thread"].send("`Awaiting agent response...`")
-        agent_response = self._agent.intake_message(message.content)
+
+        agent_response = self._intake_message(message.content)
 
         await self._active_chat["thread"].send(agent_response)
 
