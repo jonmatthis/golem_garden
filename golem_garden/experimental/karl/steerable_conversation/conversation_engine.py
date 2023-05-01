@@ -19,13 +19,16 @@ agent_enpisi_config_path = str(Path(__file__).parent.parent.parent / "Builder" /
 agent_list = [agent_enpisi_config_path, agent_enpisi_config_path]
 
 
-def npc_builder_chain_from_config_path(config_path, llm=None) -> NPCBuilderChain:
-    if llm is None:
-        llm = ChatOpenAI(model='gpt-4', temperature=0.9)
+def npc_builder_chain_from_config_path(config_path, conversation_llm=None, analysis_llm=None) -> NPCBuilderChain:
+    if conversation_llm is None:
+        conversation_llm = ChatOpenAI(model='gpt-4', temperature=0.9)
+
+    if analysis_llm is None:
+        analysis_llm = ChatOpenAI(model='gpt-3.5-turbo', temperature=0.1)
 
     agent_definition = toml.load(config_path)
 
-    npc_builder_chain = NPCBuilderChain.from_llm(llm, llm, verbose=False, agent_config=agent_definition)
+    npc_builder_chain = NPCBuilderChain.from_llm(conversation_llm, analysis_llm, verbose=False, agent_config=agent_definition)
     npc_builder_chain.seed_agent()
 
     return npc_builder_chain
