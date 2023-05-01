@@ -3,7 +3,7 @@ import logging
 import discord
 
 from golem_garden.backend.golem import Golem
-from golem_garden.backend.langchain_stuff.agents.agent_builder import AgentBuilder
+from golem_garden.backend.langchain_stuff.agents.llm_chain_builder import LLMChainBuilder
 from golem_garden.backend.langchain_stuff.agents.get_available_agents import get_available_agents
 from golem_garden.experimental.karl.steerable_conversation.conversation_engine import \
     npc_builder_chain_from_config_path, agent_enpisi_config_path, ConversationEngine
@@ -89,7 +89,7 @@ class AgentCog(discord.Cog):
             self._intake_message = agent.step
 
         if agent_name == "dunkthulu":
-            agent = AgentBuilder(AVAILABLE_AGENTS["dunkthulu"])
+            agent = LLMChainBuilder(AVAILABLE_AGENTS["dunkthulu"])
             self._intake_message = agent.intake_message
 
         return agent

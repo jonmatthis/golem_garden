@@ -19,3 +19,7 @@ def get_available_agents():
     available_agents["enpisi+enpisi"] = ""
     available_agents["original_golem"] = ""
     return available_agents
+
+def get_agent_config(agent_name: str):
+    available_agents = load_all_agent_configuration_files()
+    return available_agents[agent_name]
