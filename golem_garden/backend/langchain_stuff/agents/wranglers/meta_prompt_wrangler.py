@@ -48,31 +48,33 @@ def get_new_instructions(meta_output):
 async def meta_prompt_main(task:str, max_inner_loops=3, max_meta_iterations=5):
 
     meta_prompt_config = get_agent_config(agent_name = "meta_prompt")
+    instruction_follower_config = get_agent_config(agent_name="instruction_follower")
 
-
-    failed_phrase = 'task failed'
-    success_phrase = 'task succeeded'
+    failed_phrase = 'fail'
+    success_phrase = 'succeed'
     key_phrases = [success_phrase, failed_phrase]
 
     instructions = 'None'
     for iteration_number in range(max_meta_iterations):
         print(f'[Episode {iteration_number + 1}/{max_meta_iterations}]')
-        base_llm_chain = LLMChainBuilder(config=meta_prompt_config)
-        base_llm_chain_output = base_llm_chain.intake_message(human_input=task)
+        instruction_follower = LLMChainBuilder(config=instruction_follower_config)
+        instruction_follower_output = instruction_follower.intake_message(instructions=task)
         for j in range(max_inner_loops):
-            print(f'(Step {j + 1}/{max_inner_loops})')
-            print(f'Assistant: {base_llm_chain_output}')
-            print(f'Human: ')
+            print(f'(Inner loop {j + 1}/{max_inner_loops})\n---\n')
+            print(f'Assistant: {instruction_follower_output}')
+            print(f'Human ("success" or "fail" to indicate bot performance): ')
             human_input = input()
             if any(phrase in human_input.lower() for phrase in key_phrases):
                 break
-            base_llm_chain_output = base_llm_chain.intake_message(human_input=human_input)
+            instruction_follower_output = instruction_follower.intake_message(human_input=human_input)
+
         if success_phrase in human_input.lower():
             print(f'You succeeded! Thanks for playing!')
             return
+
         meta_prompt_llm_chain = LLMChainBuilder(config=meta_prompt_config)
-        meta_output = meta_prompt_llm_chain.intake_message(chat_history=base_llm_chain.get_chat_history())
-        print(f'Feedback: {meta_output}')
+        meta_output = meta_prompt_llm_chain.intake_message(chat_history=instruction_follower.get_chat_history())
+        print(f'Feedback from `meta_prompt_chain`: {meta_output}')
         instructions = get_new_instructions(meta_output)
         print(f'New Instructions: {instructions}')
         print('\n' + '#' * 80 + '\n')

@@ -1,0 +1,44 @@
+# Meta-Prompt - https://python.langchain.com/en/latest/use_cases/autonomous_agents/meta_prompt.html
+
+[llm]
+type = "ChatOpenAI"
+temperature = 0
+model_name = "gpt-3.5-turbo"
+
+[prompt]
+template = """
+These are your instructions, follow them to the best of your ability:
+
+{instructions}
+
+####
+{chat_history}
+####
+Human: {human_input}
+Assistant:
+"""
+
+[prompt.input_variables]
+instructions = "Assist the Human in their task"
+chat_history = ""
+human_input = "Please help me complete this task"
+
+
+
+[memory]
+type = "ConversationBufferMemory"
+memory_key = "chat_history"
+ai_prefix = "Assistant"
+return_messages = true
+
+
+[tools]
+tools = ["human"]
+
+
+[index]
+indexes_available = []
+retriever = []
+
+
+
