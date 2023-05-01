@@ -225,13 +225,12 @@ class NPCBuilderGPT(Chain, BaseModel):
 def main():
     print("butts")
 
-    # path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/loke_aisha_n.config"
     path = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
     agent_definition=toml.load(path)
     print(agent_definition)
     print(toml.dumps(agent_definition))
 
-    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/bill_dworld.config"
     agent_definition2 = toml.load(path2)
     print(agent_definition2)
     print(toml.dumps(agent_definition2))
@@ -262,13 +261,13 @@ def main():
         print(guy_a_says)
         print("\n------\n")
         NPC_builder_agent2.input_step(guy_a_says)
-        #print(NPC_builder_agent2.determine_conversation_stage())
+        NPC_builder_agent2.determine_conversation_stage()
         #print("\n------\n")
         guy_b_says = NPC_builder_agent2.step()
         print(guy_b_says)
         #print("\n------\n")
         NPC_builder_agent.input_step(guy_b_says)
-        #print(NPC_builder_agent.determine_conversation_stage())
+        NPC_builder_agent.determine_conversation_stage()
         print("\n------\n")
 
         human_response = input("Enter your response, or 'QUIT' to cancel:")
