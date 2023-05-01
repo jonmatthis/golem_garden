@@ -18,9 +18,19 @@ load_dotenv()
 
 class AgentBuilder:
     def __init__(self,
-                 config_file: Union[str, Path]):
-        self._config = toml.load(config_file)
-        self._name = self._config["prompt"]["input_variables"]["name"]
+                 configuration: dict = None,
+                 config_path: Union[str, Path] = None):
+        if configuration is None:
+            try:
+                self._configuration = toml.load(config_path)
+            except Exception as e:
+                logger.error(f"Could not load config TOML file at path: {config_path}")
+                raise e
+        else:
+            self._configuration = configuration
+
+
+        self._name = self._configuration["prompt"]["input_variables"]["name"]
         self._llm = self._configure_llm()
         self._prompt = self._create_prompt()
         # self._llm_chain = self._make_llm_chain()
@@ -35,13 +45,13 @@ class AgentBuilder:
         logger.info(f"Received message: {message}")
         return self._llm_chain.predict(human_input=message)
     def _configure_llm(self):
-        llm_config = self._config["llm"]
+        llm_config = self._configuration["llm"]
         if llm_config["type"] == "ChatOpenAI":
             return ChatOpenAI(temperature=llm_config["temperature"],
                               model_name=llm_config["model_name"])
 
     def _create_prompt(self):
-        prompt_config = self._config["prompt"]
+        prompt_config = self._configuration["prompt"]
         input_variables = list(prompt_config["input_variables"].keys())
         input_variables.append("chat_history")
         input_variables.append("human_input")
@@ -57,7 +67,7 @@ class AgentBuilder:
 
     def _configure_memory(self):
 
-        memory_config = self._config["memory"]
+        memory_config = self._configuration["memory"]
         logger.info(f"Configuring memory of type {memory_config}")
 
         if memory_config["type"] == "ConversationBufferMemory":
@@ -81,7 +91,7 @@ class AgentBuilder:
 
 
 if __name__ == "__main__":
-    agent = AgentBuilder(config_file="./configuration_tomls/dunkthulu.toml")
+    agent = AgentBuilder(config_path="./configuration_tomls/dunkthulu.toml")
     print(agent.intake_message("Hello, tell me about yourself!"))
     print(agent.intake_message("Thats wild, tell me more!"))
     print("Done!")

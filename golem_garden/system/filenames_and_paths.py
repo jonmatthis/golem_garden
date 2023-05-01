@@ -7,6 +7,7 @@ BASE_DATA_FOLDER_NAME = "golem_garden_data"
 LOG_FILE_FOLDER_NAME = "logs"
 
 
+
 def os_independent_home_dir():
     return str(Path.home())
 

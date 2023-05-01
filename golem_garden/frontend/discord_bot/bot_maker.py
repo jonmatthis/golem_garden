@@ -4,7 +4,7 @@ import discord
 
 
 logger = logging.getLogger(__name__)
-def make_bot():
+def make_discord_bot():
     intents = discord.Intents.default()
     intents.message_content = True
     bot = discord.Bot(intents=intents)

@@ -11,7 +11,7 @@ load_dotenv()
 
 import toml
 
-from typing import Callable
+from typing import Callable, Coroutine, Union, Any
 
 from langchain.chat_models import ChatOpenAI
 
@@ -48,7 +48,7 @@ def publish_func(msg):
 class ConversationEngine:
     def __init__(self,
                  poll_func: Callable[[], int] = None,
-                 publish_func: Callable[[str], None] = None,
+                 publish_func:  Callable[[str], None] = None,
                  agents: list = agent_list,
                  model_name='gpt-3.5-turbo'):
 
