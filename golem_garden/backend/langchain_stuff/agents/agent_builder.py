@@ -8,6 +8,7 @@ from langchain import PromptTemplate, LLMChain, SerpAPIWrapper
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory, ConversationSummaryMemory
+from langchain.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +24,11 @@ class AgentBuilder:
         self._name = self._config["name"]
         self._llm = self._configure_llm()
         self._prompt = self._create_prompt()
-        # self._llm_chain = self._make_llm_chain()
+        self._llm_chain = self._make_llm_chain()
         self._memory = self._configure_memory()
         self._tools = self._configure_tools()
         self._agent_chain = self._make_agent_chain()
+
 
     def run(self, message: str):
         logger.info(f"Received message: {message}")
@@ -41,20 +43,19 @@ class AgentBuilder:
     def _create_prompt(self):
         prompt_config = self._config["prompt"]
 
-        inputs = list(prompt_config["input_vars"].keys())
-        inputs.append("history")
-        inputs.append("human_input")
 
-        prompt = PromptTemplate(
-            template=prompt_config["template"],
-            input_variables=inputs,
+        # human_message_prompt = HumanMessagePromptTemplate(prompt=prompt)
+        human_message_prompt = HumanMessagePromptTemplate(
+            prompt=PromptTemplate(
+                template=prompt_config["template"],
+                input_variables=list(prompt_config["input_vars"].keys()),
+            )
         )
+        human_message_prompt_formatted = human_message_prompt.format(**prompt_config["input_vars"])
+        chat_prompt_template = ChatPromptTemplate.from_messages([human_message_prompt_formatted])
 
-        prompt = prompt.partial(**prompt_config["input_vars"])
 
-        logger.info(f"Prompt: {prompt}")
-
-        return prompt
+        return chat_prompt_template
 
     def _configure_memory(self):
 
@@ -77,6 +78,7 @@ class AgentBuilder:
 
     def _make_llm_chain(self):
         llm_chain = LLMChain(llm=self._llm, prompt=self._prompt, verbose=True)
+
         return llm_chain
 
     def _configure_tools(self):
