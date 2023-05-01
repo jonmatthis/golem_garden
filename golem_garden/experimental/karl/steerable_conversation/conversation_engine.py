@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from golem_garden.experimental.Builder.NPCBuilder import NPCBuilderGPT
+from golem_garden.experimental.Builder.npc_builder_chain import NPCBuilderChain
 
 load_dotenv()
 
@@ -15,17 +15,20 @@ from typing import Callable
 
 from langchain.chat_models import ChatOpenAI
 
-agent_enpisi_config_path = str(Path(__file__).parent.parent.parent / "jkl" / "agent_definitions" / "enpisi.config")
+agent_enpisi_config_path = str(Path(__file__).parent.parent.parent / "Builder" / "agent_definitions" / "enpisi.config")
 agent_list = [agent_enpisi_config_path, agent_enpisi_config_path]
 
 
-def agent_from_config_path(config_path, llm):
+def npc_builder_chain_from_config_path(config_path, llm=None) -> NPCBuilderChain:
+    if llm is None:
+        llm = ChatOpenAI(model='gpt-4', temperature=0.9)
+
     agent_definition = toml.load(config_path)
 
-    agent = NPCBuilderGPT.from_llm(llm, llm, verbose=False, agent_config=agent_definition)
-    agent.seed_agent()
+    npc_builder_chain = NPCBuilderChain.from_llm(llm, llm, verbose=False, agent_config=agent_definition)
+    npc_builder_chain.seed_agent()
 
-    return agent
+    return npc_builder_chain
 
 
 def poll_func():
@@ -48,7 +51,7 @@ class ConversationEngine:
         self.agents = agents
         llm = ChatOpenAI(model=model_name, temperature=0.9)
 
-        self.agent_1, self.agent_2 = [agent_from_config_path(path, llm=llm) for path in self.agents]
+        self.agent_1, self.agent_2 = [npc_builder_chain_from_config_path(path, llm=llm) for path in self.agents]
 
         self._tell_agents_to_collaborate()
 
@@ -72,20 +75,20 @@ class ConversationEngine:
                 self.agent_1.input_step(
                     f"The other agent said: {self._previous_message_2}, the human said{human_message} - collaborate!")
         else:
-            self.agent_1.input_step(f"The other agent said: {self._previous_message_2} - the human doesn't have input this step- collaborate!")
-
+            self.agent_1.input_step(
+                f"The other agent said: {self._previous_message_2} - the human doesn't have input this step- collaborate!")
 
         await self.publish(f"Agent 1 says:")
         self._previous_message_1 = self.agent_1.step()
         await self.publish(self._previous_message_1)
         self.agent_2.input_step(self._previous_message_1)
 
-
         if human_message != 'pass':
             self.agent_2.input_step(
-                    f"The other agent said: {self._previous_message_1}, the human said{human_message} - collaborate!")
+                f"The other agent said: {self._previous_message_1}, the human said{human_message} - collaborate!")
         else:
-            self.agent_2.input_step(f"The other agent said: {self._previous_message_1} - the human doesn't have input this step - collaborate!")
+            self.agent_2.input_step(
+                f"The other agent said: {self._previous_message_1} - the human doesn't have input this step - collaborate!")
 
         await self.publish(f"Agent 2 says:")
         self._previous_message_2 = self.agent_2.step()

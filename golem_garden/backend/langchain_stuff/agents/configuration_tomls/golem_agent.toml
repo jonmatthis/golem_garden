@@ -1,17 +1,5 @@
 name = "DefaultAgent"
 
-[tools]
-tools = ["serper", "wolfram", "wikipedia"]
-
-[memory]
-memory_type = "ConversationBufferMemory"
-memory_key = "chat_history"
-return_messages = true
-
-[index]
-indexes_available = []
-retriever = []
-
 [llm]
 index_type = "ChatOpenAI"
 temperature = 0.8
@@ -19,3 +7,18 @@ model_name = "gpt-4"
 
 [prompt]
 prompt = "Hello there you're golem!"
+
+[memory]
+memory_type = "ConversationBufferMemory"
+memory_key = "chat_history"
+return_messages = true
+
+[tools]
+tools = ["serper", "wolfram", "wikipedia"]
+
+
+
+[index]
+indexes_available = []
+retriever = []
+

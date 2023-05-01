@@ -17,17 +17,16 @@ default_logging_formatter = logging.Formatter(fmt=format_string, datefmt="%Y-%m-
 def get_logging_handlers():
     dictConfig(DEFAULT_LOGGING)
 
-    # console_handler = logging.StreamHandler(sys.stdout)
-    # console_handler.setLevel(logging.DEBUG)
-    # console_handler.setFormatter(default_logging_formatter)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(default_logging_formatter)
 
-    # Setup File handler (from https://stackoverflow.com/a/24507130/14662833 )
 
     file_handler = logging.FileHandler(get_log_file_path())
     file_handler.setFormatter(default_logging_formatter)
     file_handler.setLevel(logging.DEBUG)
 
-    return [file_handler]
+    return [console_handler, file_handler]
 
 
 def configure_logging():

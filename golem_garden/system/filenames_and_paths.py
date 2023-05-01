@@ -28,4 +28,4 @@ def get_log_file_path():
 
 
 def create_log_file_name():
-    return "log_" + time.strftime("%m-%d-%YT%H_%M_%S") + ".log"
+    return "log_" + time.strftime("%Y-%m-%dT%H_%M_%S") + ".log"
