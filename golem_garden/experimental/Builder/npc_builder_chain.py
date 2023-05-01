@@ -106,7 +106,7 @@ class NPCBuildConversationChain(LLMChain):
         )
         return cls(prompt=prompt, llm=llm, verbose=verbose)
 
-class NPCBuilderGPT(Chain, BaseModel):
+class NPCBuilderChain(Chain, BaseModel):
     """Controller model for the NPC Builder Agent."""
 
     conversation_history: List[str] = []
@@ -198,7 +198,7 @@ class NPCBuilderGPT(Chain, BaseModel):
     @classmethod
     def from_llm(
             cls, conversation_llm: BaseLLM, analyzer_llm: BaseLLM, verbose: bool = False, agent_config = None, **kwargs
-    ) -> "NPCBuilderGPT":
+    ) -> "NPCBuilderChain":
         """Initialize the NPCBuilderGPT Controller."""
         memory_wrapper = VectorStoreMemoryWrapper()
         memory = memory_wrapper.build_vector_store_retrieval_memory()
@@ -239,10 +239,10 @@ def main():
     llm = ChatOpenAI(model="gpt-4", temperature=0.9)
     llm2 = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
 
-    NPC_builder_agent = NPCBuilderGPT.from_llm(llm, llm2, verbose=False, agent_config=agent_definition)
+    NPC_builder_agent = NPCBuilderChain.from_llm(llm, llm2, verbose=False, agent_config=agent_definition)
     NPC_builder_agent.seed_agent()
 
-    NPC_builder_agent2 = NPCBuilderGPT.from_llm(llm, llm2, verbose=False, agent_config=agent_definition2)
+    NPC_builder_agent2 = NPCBuilderChain.from_llm(llm, llm2, verbose=False, agent_config=agent_definition2)
     NPC_builder_agent2.seed_agent()
 
     while False:
