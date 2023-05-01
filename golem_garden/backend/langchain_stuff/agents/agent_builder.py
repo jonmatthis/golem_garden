@@ -9,33 +9,6 @@ from langchain.chat_models import ChatOpenAI
 logger = logging.getLogger(__name__)
 
 
-# class AbstractAgent(abc.ABC, BaseModel):
-#     name: str = None
-#     prompt: str = None
-#     llm: LLM = None
-#     memory: Memory = None
-#     tools: List[Tool] = []
-#
-#     @abc.abstractmethod
-#     def make_prompt(self):
-#         pass
-#     @abc.abstractmethod
-#     def make_llm(self):
-#         pass
-#
-#     @abc.abstractmethod
-#     def make_memory(self):
-#         pass
-#
-#     @abc.abstractmethod
-#     def add_tool(self, func, name, description=None):
-#         pass
-#
-#     @abc.abstractmethod
-#     def intake_message(self, message: str):
-#         pass
-#
-
 
 class AgentBuilder:
     def __init__(self,

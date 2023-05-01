@@ -28,7 +28,8 @@ def npc_builder_chain_from_config_path(config_path, conversation_llm=None, analy
 
     agent_definition = toml.load(config_path)
 
-    npc_builder_chain = NPCBuilderChain.from_llm(conversation_llm, analysis_llm, verbose=False, agent_config=agent_definition)
+    npc_builder_chain = NPCBuilderChain.from_llm(conversation_llm, analysis_llm, verbose=False,
+                                                 agent_config=agent_definition)
     npc_builder_chain.seed_agent()
 
     return npc_builder_chain
@@ -52,9 +53,8 @@ class ConversationEngine:
                  model_name='gpt-3.5-turbo'):
 
         self.agents = agents
-        llm = ChatOpenAI(model=model_name, temperature=0.9)
 
-        self.agent_1, self.agent_2 = [npc_builder_chain_from_config_path(path, llm=llm) for path in self.agents]
+        self.agent_1, self.agent_2 = [npc_builder_chain_from_config_path(path) for path in self.agents]
 
         self._tell_agents_to_collaborate()
 
