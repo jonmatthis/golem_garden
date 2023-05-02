@@ -3,7 +3,7 @@
 [llm]
 type = "ChatOpenAI"
 temperature = 0.8
-model_name = "gpt-4"
+model = "gpt-4"
 
 [prompt]
 template = """

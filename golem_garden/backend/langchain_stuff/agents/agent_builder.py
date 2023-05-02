@@ -1,11 +1,9 @@
 import logging
-import os
 from pathlib import Path
 from typing import Union
 
 import toml
-from langchain import PromptTemplate, LLMChain, SerpAPIWrapper
-from langchain.agents import Tool, initialize_agent, AgentType
+from langchain import PromptTemplate, LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory, ConversationSummaryMemory
 
@@ -19,7 +17,8 @@ load_dotenv()
 class AgentBuilder:
     def __init__(self,
                  configuration: dict = None,
-                 config_path: Union[str, Path] = None):
+                 config_path: Union[str, Path] = None,
+                 model: str = None):
         if configuration is None:
             try:
                 self._configuration = toml.load(config_path)
@@ -29,9 +28,11 @@ class AgentBuilder:
         else:
             self._configuration = configuration
 
+        if model is not None:
+            self._configuration ["model"] = model
 
         self._name = self._configuration["prompt"]["input_variables"]["name"]
-        self._llm = self._configure_llm()
+        self._llm = self._configure_llm(**self._configuration["llm"])
         self._prompt = self._create_prompt()
         # self._llm_chain = self._make_llm_chain()
         self._memory = self._configure_memory()
@@ -40,21 +41,25 @@ class AgentBuilder:
                                    memory=self._memory,
                                    verbose=True)
 
-
     def intake_message(self, message: str):
         logger.info(f"Received message: {message}")
         return self._llm_chain.predict(human_input=message)
-    def _configure_llm(self):
-        llm_config = self._configuration["llm"]
-        if llm_config["type"] == "ChatOpenAI":
-            return ChatOpenAI(temperature=llm_config["temperature"],
-                              model_name=llm_config["model_name"])
+
+    def _configure_llm(self,
+                       type: str = "ChatOpenAI",
+
+                       **kwargs):
+        if type == "ChatOpenAI":
+            return ChatOpenAI(**kwargs)
 
     def _create_prompt(self):
         prompt_config = self._configuration["prompt"]
         input_variables = list(prompt_config["input_variables"].keys())
+
+        #TODO - switch to `chat_model_template` or whatever so we don't need to do this
         input_variables.append("chat_history")
         input_variables.append("human_input")
+
         # input_variables.append("agent_scratchpad")
 
         prompt_template = PromptTemplate(
@@ -77,7 +82,8 @@ class AgentBuilder:
             memory = ConversationBufferWindowMemory(memory_key=memory_config["memory_key"],
                                                     return_messages=memory_config["return_messages"])
         elif memory_config["type"] == "ConversationSummaryMemory":
-            memory = ConversationSummaryMemory(memory_key=memory_config["memory_key"],
+            memory = ConversationSummaryMemory(llm=self._configure_llm(model="gpt-3.5-turbo", temperature=0),
+                                               memory_key=memory_config["memory_key"],
                                                return_messages=memory_config["return_messages"])
         else:
             raise NotImplementedError(f"Memory type {memory_config['type']} not implemented... YET!")
@@ -95,5 +101,3 @@ if __name__ == "__main__":
     print(agent.intake_message("Hello, tell me about yourself!"))
     print(agent.intake_message("Thats wild, tell me more!"))
     print("Done!")
-
-
