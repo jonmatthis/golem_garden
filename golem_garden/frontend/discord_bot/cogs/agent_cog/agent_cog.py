@@ -88,9 +88,13 @@ class AgentCog(discord.Cog):
             agent = ConversationEngine(publish_func=self._publish_message)
             self._intake_message = agent.step
 
-        if agent_name == "dunkthulu":
-            agent = AgentBuilder(AVAILABLE_AGENTS["dunkthulu"])
+
+        try:
+            agent = AgentBuilder(AVAILABLE_AGENTS[agent_name])
             self._intake_message = agent.intake_message
+        except KeyError:
+            agent = None
+            raise KeyError(f"Agent {agent_name} not found!")
 
         return agent
     async def _publish_message(self, message):
