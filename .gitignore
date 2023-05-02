@@ -135,3 +135,5 @@ utilities/output/*
 test_database.json
 
 utilities/output/*
+.tmp*
+*.ini
