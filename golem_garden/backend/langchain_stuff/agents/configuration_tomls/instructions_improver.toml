@@ -1,0 +1,55 @@
+# Meta-Prompt - https://python.langchain.com/en/latest/use_cases/autonomous_agents/meta_prompt.html
+
+[llm]
+type = "ChatOpenAI"
+temperature = 0.8
+model_name = "gpt-4"
+
+[prompt]
+template = """
+Your name is {name}.
+
+Assistant has just had the below interactions with a User. Your job is to critique the Assistant's performance and then revise the Instructions so that Assistant would quickly and correctly respond in the future.
+
+The assistant was following these instructions:
+
+{instructions}
+
+####
+{chat_history}
+####
+
+Please reflect on these interactions.
+{instructions}
+
+You should first critique Assistant's performance. What could Assistant have done better? What should the Assistant remember about this user? Are there things this user always wants? Indicate this with "Critique: ...".
+
+You should next revise the Instructions so that Assistant would quickly and correctly respond in the future. Assistant's goal is to satisfy the user in as few interactions as possible. Assistant will only see the new Instructions, not the interaction history, so anything important must be summarized in the Instructions. Don't forget any important details in the current Instructions! Indicate the new Instructions by "Instructions: ...".
+
+Human: {human_input}
+Assistant:
+"""
+[prompt.input_variables]
+name = "instructions_improver"
+chat_history = ""
+instructions = "please help me out with something"
+
+
+
+[memory]
+type = "ConversationBufferMemory"
+memory_key = "chat_history"
+ai_prefix = "Assistant"
+return_messages = true
+
+
+[tools]
+tools = ["human"]
+
+
+[index]
+indexes_available = []
+retriever = []
+
+
+
