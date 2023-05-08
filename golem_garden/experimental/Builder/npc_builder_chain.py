@@ -231,7 +231,7 @@ def main():
     print(agent_definition)
     print(toml.dumps(agent_definition))
 
-    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/enpisi.config"
+    path2 = os.path.dirname(os.path.realpath(__file__)) + "/agent_definitions/bill_dworld.config"
     agent_definition2 = toml.load(path2)
     print(agent_definition2)
     print(toml.dumps(agent_definition2))
@@ -271,7 +271,8 @@ def main():
         print(guy_b_says)
         #print("\n------\n")
         NPC_builder_agent.input_step(guy_b_says)
-        #print(NPC_builder_agent.determine_conversation_stage())
+
+
         print("\n------\n")
 
         human_response = input("Enter your response, or 'QUIT' to cancel:")
