@@ -258,11 +258,14 @@ def main():
         print("\n---\n")
 
     while True:
+        guy_a_analysis = NPC_builder_agent.determine_conversation_stage()
+        print(guy_a_analysis.split(":")[0])
         guy_a_says = NPC_builder_agent.step()
         print(guy_a_says)
         print("\n------\n")
         NPC_builder_agent2.input_step(guy_a_says)
-        #print(NPC_builder_agent2.determine_conversation_stage())
+        guy_b_analysis = NPC_builder_agent2.determine_conversation_stage()
+        print(guy_b_analysis.split(":")[0])
         #print("\n------\n")
         guy_b_says = NPC_builder_agent2.step()
         print(guy_b_says)
