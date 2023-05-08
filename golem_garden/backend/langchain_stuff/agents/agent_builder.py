@@ -1,7 +1,9 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Union
 
+import asyncio
 import toml
 from langchain import PromptTemplate, LLMChain
 from langchain.chat_models import ChatOpenAI
@@ -29,13 +31,13 @@ class AgentBuilder:
             self._configuration = configuration
 
         if model is not None:
-            self._configuration ["model"] = model
+            self._configuration["model"] = model
 
         self._name = self._configuration["prompt"]["input_variables"]["name"]
         self._llm = self._configure_llm(**self._configuration["llm"])
         self._prompt = self._create_prompt()
-        # self._llm_chain = self._make_llm_chain()
         self._memory = self._configure_memory()
+
         self._llm_chain = LLMChain(llm=self._llm,
                                    prompt=self._prompt,
                                    memory=self._memory,
@@ -45,9 +47,12 @@ class AgentBuilder:
         logger.info(f"Received message: {message}")
         return self._llm_chain.predict(human_input=message)
 
+    async def aintake_message(self, message: str):
+        logger.info(f"Received message: {message}")
+        return await self._llm_chain.apredict(human_input=message)
+
     def _configure_llm(self,
                        type: str = "ChatOpenAI",
-
                        **kwargs):
         if type == "ChatOpenAI":
             return ChatOpenAI(**kwargs)
@@ -56,7 +61,7 @@ class AgentBuilder:
         prompt_config = self._configuration["prompt"]
         input_variables = list(prompt_config["input_variables"].keys())
 
-        #TODO - switch to `chat_model_template` or whatever so we don't need to do this
+        # TODO - switch to `chat_model_template` or whatever so we don't need to do this
         input_variables.append("chat_history")
         input_variables.append("human_input")
 
@@ -78,9 +83,11 @@ class AgentBuilder:
         if memory_config["type"] == "ConversationBufferMemory":
             memory = ConversationBufferMemory(memory_key=memory_config["memory_key"],
                                               return_messages=memory_config["return_messages"])
+
         elif memory_config["type"] == "ConversationBufferWindowMemory":
             memory = ConversationBufferWindowMemory(memory_key=memory_config["memory_key"],
                                                     return_messages=memory_config["return_messages"])
+
         elif memory_config["type"] == "ConversationSummaryMemory":
             memory = ConversationSummaryMemory(llm=self._configure_llm(model="gpt-3.5-turbo", temperature=0),
                                                memory_key=memory_config["memory_key"],
@@ -90,14 +97,21 @@ class AgentBuilder:
 
         return memory
 
-    def _make_llm_chain(self):
-        llm_chain = LLMChain(llm=self._llm, prompt=self._prompt, verbose=True)
 
-        return llm_chain
+async def ademo_main():
+    agent = AgentBuilder(config_path="./configuration_tomls/dunkthulu.toml")
+    human_message_1 = "Hello, I am a human. I am here to talk to you about the weather."
+    print(f"\n--Human says: {human_message_1}")
+    print(await agent.aintake_message(human_message_1))
+    human_message_2 = "Thats wild, tell me more!"
+    print(f"\n--Human says: {human_message_2}")
+    print(await agent.aintake_message(human_message_2))
+    print("\n--Done!")
 
 
 if __name__ == "__main__":
-    agent = AgentBuilder(config_path="./configuration_tomls/dunkthulu.toml")
-    print(agent.intake_message("Hello, tell me about yourself!"))
-    print(agent.intake_message("Thats wild, tell me more!"))
-    print("Done!")
+    # Set the event loop policy to WindowsSelectorEventLoopPolicy on Windows
+    if sys.platform.startswith('win'):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    asyncio.run(ademo_main())
