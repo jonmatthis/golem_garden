@@ -31,7 +31,7 @@ class AgentBuilder:
             self._configuration = configuration
 
         if model is not None:
-            self._configuration["model"] = model
+            self._configuration["llm"]["model"] = model
 
         self._name = self._configuration["prompt"]["input_variables"]["name"]
         self._llm = self._configure_llm(**self._configuration["llm"])

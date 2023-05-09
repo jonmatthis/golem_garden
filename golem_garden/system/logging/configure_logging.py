@@ -14,26 +14,38 @@ format_string = "[%(asctime)s.%(msecs)04d] [%(levelname)8s] [%(name)s] [%(funcNa
 default_logging_formatter = logging.Formatter(fmt=format_string, datefmt="%Y-%m-%dT%H:%M:%S")
 
 
-def get_logging_handlers():
+def get_logging_handlers(entry_point:str=None):
+
     dictConfig(DEFAULT_LOGGING)
 
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.DEBUG)
-    console_handler.setFormatter(default_logging_formatter)
+    console_handler = build_console_handler()
+    file_handler = build_file_handler()
+
+    if entry_point == "discord":
+        return [console_handler, file_handler]
+
+    return [file_handler]
 
 
+def build_file_handler():
     file_handler = logging.FileHandler(get_log_file_path())
     file_handler.setFormatter(default_logging_formatter)
     file_handler.setLevel(logging.DEBUG)
+    return file_handler
 
-    return [console_handler, file_handler]
+
+def build_console_handler():
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(default_logging_formatter)
+    return console_handler
 
 
-def configure_logging():
+def configure_logging(entry_point:str=None):
     print(f"Setting up logging  {__file__}")
 
     if len(logging.getLogger().handlers) == 0:
-        handlers = get_logging_handlers()
+        handlers = get_logging_handlers(entry_point=entry_point)
         for handler in handlers:
             if not handler in logging.getLogger("").handlers:
                 logging.getLogger("").handlers.append(handler)

@@ -4,8 +4,11 @@ import os
 
 from dotenv import load_dotenv
 
-from golem_garden.frontend.discord_bot.bot_maker import make_discord_bot
+from golem_garden.frontend.discord_bot.utilities.bot_maker import make_discord_bot
 from golem_garden.frontend.discord_bot.cogs.agent_cog.agent_cog import AgentCog
+from golem_garden.system.logging.configure_logging import configure_logging
+
+configure_logging(entry_point="discord")
 
 load_dotenv()
 
