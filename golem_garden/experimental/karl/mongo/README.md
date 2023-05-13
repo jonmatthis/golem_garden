@@ -40,3 +40,7 @@ Another LLM will then examine the updated model, and generate questions that wil
 The updated model as well as new questions to ask are returned in `ModelUpdateResponse`
 
 In addition, the updated model is written to the mongo DB
+
+# intended use
+
+you should shove AI question + human answer pairs into `handle_model_update` and the conversation moves along
