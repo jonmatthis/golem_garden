@@ -36,4 +36,7 @@ class ExampleHuman(BaseModel):
     name: str = ''
     age: str = ''
     occupation: str = ''
-    
+    favorite_color: str = ''
+    vibe: str = ''
+    long_description: str = ''
+    midjourney_prompt: str = ''

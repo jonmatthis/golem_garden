@@ -28,6 +28,7 @@ dependencies = [
     "uvicorn",
     "rich",
     "ipykernel",
+    "pymongo",
 
     #langchain et al
     "langchain",
