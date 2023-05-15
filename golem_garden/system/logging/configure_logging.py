@@ -14,20 +14,25 @@ format_string = "[%(asctime)s.%(msecs)04d] [%(levelname)8s] [%(name)s] [%(funcNa
 default_logging_formatter = logging.Formatter(fmt=format_string, datefmt="%Y-%m-%dT%H:%M:%S")
 
 
-def get_logging_handlers():
+def get_logging_handlers(entry_point: str = None):
+
     dictConfig(DEFAULT_LOGGING)
 
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.DEBUG)
-    console_handler.setFormatter(default_logging_formatter)
+    handlers = []
+
+    if entry_point is not None:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(default_logging_formatter)
+        handlers.append(console_handler)
 
 
     file_handler = logging.FileHandler(get_log_file_path())
     file_handler.setFormatter(default_logging_formatter)
     file_handler.setLevel(logging.DEBUG)
+    handlers.append(file_handler)
 
-    return [console_handler, file_handler]
-
+    return handlers
 
 def configure_logging():
     print(f"Setting up logging  {__file__}")
