@@ -202,6 +202,7 @@ class ChatCog(discord.Cog):
                              use_project_manager_prompt: bool = False) -> Chatbot:
 
         assistant = Chatbot()
+        await assistant.create_chatbot()
         if thread.message_count > 0:
             message = await thread.send(
                 f"> Reloading bot memory from thread history...")
