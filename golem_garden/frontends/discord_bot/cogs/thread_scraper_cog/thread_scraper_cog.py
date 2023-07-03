@@ -6,14 +6,10 @@ from datetime import datetime
 import discord
 from discord import Forbidden
 from discord.ext import commands
-
-from chatbot.discord_bot.cogs.thread_scraper_cog.message_anonymizer import anonymize_message
-from chatbot.discord_bot.cogs.thread_scraper_cog.thread_stats import ThreadStats
-from chatbot.mongo_database.mongo_database_manager import MongoDatabaseManager
-from chatbot.student_info.find_student_name import find_student_info, get_initials
-from chatbot.student_info.load_student_info import load_student_info
-from chatbot.system.environment_variables import get_admin_users
-from chatbot.system.filenames_and_paths import get_thread_backups_collection_name
+from golem_garden.backend.mongo_database.mongo_database_manager import MongoDatabaseManager
+from golem_garden.frontends.discord_bot.cogs.thread_scraper_cog.thread_stats import ThreadStats
+from system.environment_variables import get_admin_users
+from system.filenames_and_paths import get_thread_backups_collection_name
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +22,7 @@ class ThreadScraperCog(commands.Cog):
                  mongo_database_manager: MongoDatabaseManager):
         self.bot = bot
         self.mongo_database_manager = mongo_database_manager
-        self.student_info = load_student_info()
+
 
     @discord.slash_command(name='scrape_threads', description='(ADMIN ONLY) Scrape all threads in the current server')
     @discord.option(name="timestamp_backup",
@@ -81,10 +77,7 @@ class ThreadScraperCog(commands.Cog):
                 status_message = await self.send_status_message_update(ctx, saving_thread_string, status_message)
 
                 thread_owner_username = thread.name.split("'")[0]
-                student_discord_username, \
-                    student_name, \
-                    student_uuid = find_student_info(
-                    thread_owner_username)
+
 
                 mongo_query = {
                     "_student_name": student_name,

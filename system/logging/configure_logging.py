@@ -4,7 +4,7 @@ import logging.handlers
 import sys
 from logging.config import dictConfig
 
-from chatbot.system.filenames_and_paths import get_log_file_path
+from system.filenames_and_paths import get_log_file_path
 
 DEFAULT_LOGGING = {"version": 1, "disable_existing_loggers": False}
 

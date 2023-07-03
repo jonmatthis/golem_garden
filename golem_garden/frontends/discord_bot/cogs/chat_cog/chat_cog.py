@@ -1,5 +1,4 @@
 import logging
-import os
 import uuid
 from datetime import datetime
 
@@ -38,8 +37,6 @@ class ChatCog(discord.Cog):
         self._discord_bot = bot
         self._mongo_database = mongo_database_manager
         self._active_threads = {}
-        self._allowed_channels = os.getenv("ALLOWED_CHANNELS").split(",")
-        self._allowed_channels = [int(channel) for channel in self._allowed_channels]
         self._course_assistant_llm_chains = {}
 
     @discord.slash_command(name="chat", description="Chat with the bot")
@@ -57,9 +54,7 @@ class ChatCog(discord.Cog):
                    use_project_manager_prompt: bool = False,
                    initial_text_input: str = None):
 
-        if not ctx.channel.id in self._allowed_channels:
-            logger.info(f"Channel {ctx.channel.id} is not allowed to start a chat")
-            return
+
 
         student_user_name = str(ctx.user)
         if use_project_manager_prompt:
