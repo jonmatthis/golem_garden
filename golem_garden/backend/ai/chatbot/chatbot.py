@@ -96,9 +96,9 @@ class Chatbot(BaseModel):
             if message.content == "":
                 continue
             if str(message.author) == bot_name:
-                self.memory.chat_memory.add_ai_message(message.content)
+                self.memory.memories[0].chat_memory.add_ai_message(message.content)
             else:
-                self.memory.chat_memory.add_user_message(message.content)
+                self.memory.memories[0].chat_memory.add_user_message(message.content)
 
     async def _create_vector_store(self, collection_name: str = "test_collection"):
         chroma_vector_store = Chroma(

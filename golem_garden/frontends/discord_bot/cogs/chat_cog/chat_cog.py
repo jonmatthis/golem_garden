@@ -1,12 +1,11 @@
 import logging
-import uuid
 from datetime import datetime
 
 import discord
-from pydantic import BaseModel
 
 from golem_garden.backend.ai.chatbot.chatbot import Chatbot
 from golem_garden.backend.mongo_database.mongo_database_manager import MongoDatabaseManager
+from golem_garden.frontends.discord_bot.data_models.thread_chat_model import ThreadChat
 from system.environment_variables import get_admin_users
 
 TIME_PASSED_MESSAGE = """
@@ -16,18 +15,6 @@ TIME_PASSED_MESSAGE = """
 """
 
 logger = logging.getLogger(__name__)
-
-
-class Chat(BaseModel):
-    title: str
-    thread: discord.Thread
-    assistant: Chatbot
-
-    started_at: str = datetime.now().isoformat()
-    chat_id: str = uuid.uuid4()
-
-    class Config:
-        arbitrary_types_allowed = True
 
 
 class ChatCog(discord.Cog):
@@ -40,25 +27,16 @@ class ChatCog(discord.Cog):
         self._course_assistant_llm_chains = {}
 
     @discord.slash_command(name="chat", description="Chat with the bot")
-    @discord.option(name="use_project_manager_prompt?",
-                    description="Whether or not this is a project manager prompt",
-                    input_type=bool,
-                    required=False)
     @discord.option(name="initial_message",
                     description="The initial message to send to the bot",
                     input_type=str,
-
                     required=False)
     async def chat(self,
                    ctx: discord.ApplicationContext,
-                   use_project_manager_prompt: bool = False,
                    initial_text_input: str = None):
 
         student_user_name = str(ctx.user)
-        if use_project_manager_prompt:
-            chat_title = self._create_chat_title_string(user_name=student_user_name, task_type="Project")
-        else:
-            chat_title = self._create_chat_title_string(user_name=student_user_name)
+        chat_title = self._create_chat_title_string(user_name=student_user_name)
 
         logger.info(f"Starting chat {chat_title}")
 
@@ -67,37 +45,8 @@ class ChatCog(discord.Cog):
 
         await self._spawn_thread(message=message,
                                  student_user_name=student_user_name,
-                                 initial_text_input=initial_text_input,
-                                 use_project_manager_prompt=use_project_manager_prompt)
+                                 initial_text_input=initial_text_input)
 
-    @discord.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
-        try:
-            # Make sure we won't be replying to ourselves.
-            if payload.user_id == self._discord_bot.user.id:
-                return
-
-            # Make sure we're only responding to the correct emoji
-            if not payload.emoji.name == '🧠':
-                return
-
-            # Make sure we're only responding to the admin users
-            if not payload.user_id in get_admin_users():
-                logger.info(f"User {payload.user_id} is not an admin user")
-                return
-
-            # Get the channel and message using the payload
-            channel = self._discord_bot.get_channel(payload.channel_id)
-            message = await channel.fetch_message(payload.message_id)
-
-            student_user_name = str(message.author)
-            await self._spawn_thread(message=message,
-                                     initial_text_input=message.content,
-                                     student_user_name=student_user_name)
-
-
-        except Exception as e:
-            print(f'Error: {e}')
 
     @discord.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -122,14 +71,14 @@ class ChatCog(discord.Cog):
             chat = self._active_threads[thread.id]
         except KeyError:
             chat = await self._create_chat(thread=thread,
-                                           student_discord_username=str(message.author)
+                                           user_id=str(message.author)
                                            )
 
         logger.info(f"Sending message to the agent: {message.content}")
 
         await self._async_send_message_to_bot(chat=chat, input_text=message.content)
 
-    async def _async_send_message_to_bot(self, chat: Chat, input_text: str):
+    async def _async_send_message_to_bot(self, chat: ThreadChat, input_text: str):
         response_message = await chat.thread.send("`Awaiting bot response...`")
         try:
 
@@ -152,15 +101,13 @@ class ChatCog(discord.Cog):
                             message: discord.Message,
                             student_user_name: str,
                             initial_text_input: str = None,
-                            use_project_manager_prompt: bool = False
                             ):
 
         chat_title = self._create_chat_title_string(user_name=student_user_name)
         thread = await message.create_thread(name=chat_title)
 
         chat = await self._create_chat(thread=thread,
-                                       student_discord_username=student_user_name,
-                                       use_project_manager_prompt=use_project_manager_prompt)
+                                       user_id=student_user_name)
 
         if initial_text_input is None:
             initial_text_input = f"A human has requested a chat!"
@@ -174,18 +121,16 @@ class ChatCog(discord.Cog):
 
     async def _create_chat(self,
                            thread: discord.Thread,
-                           student_discord_username: str,
-                           use_project_manager_prompt: bool = False) -> Chat:
+                           user_id: str) -> ThreadChat:
 
         if thread.id in self._active_threads:
             logger.warning(f"Thread {thread.id} already exists! Returning existing chat")
             return self._active_threads[thread.id]
 
-        assistant = await self._get_assistant(thread, student_discord_username=student_discord_username,
-                                              use_project_manager_prompt=use_project_manager_prompt)
+        assistant = await self._get_assistant(thread)
 
-        chat = Chat(
-            title=self._create_chat_title_string(user_name=student_discord_username),
+        chat = ThreadChat(
+            title=self._create_chat_title_string(user_name=user_id),
             thread=thread,
             assistant=assistant
         )
@@ -194,9 +139,7 @@ class ChatCog(discord.Cog):
         return chat
 
     async def _get_assistant(self,
-                             thread: discord.Thread,
-                             student_discord_username: str,
-                             use_project_manager_prompt: bool = False) -> Chatbot:
+                             thread: discord.Thread) -> Chatbot:
 
         assistant = Chatbot()
         await assistant.create_chatbot()
@@ -223,12 +166,7 @@ class ChatCog(discord.Cog):
                    ...makes things up some times                    
                    ...cannot search the internet 
                    ...is doing its best 🤖❤️  
-                   
-                   Source code: 
-                   https://github.com/jonmatthis/chatbot
-                   This bot's prompt: 
-                   https://github.com/jonmatthis/chatbot/blob/main/chatbot/assistants/course_assistant/course_assistant_prompt.py
-                   
+
                    ------------------
                    ------------------
                    Beginning chat with initial message: 
