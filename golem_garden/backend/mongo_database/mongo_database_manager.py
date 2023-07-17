@@ -15,6 +15,9 @@ from system.filenames_and_paths import clean_path_string, get_default_database_j
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+MONGODB_DATABASE_NAME = 'golem_garden'
+MONGODB_HISTORY_COLLECTION_NAME = 'chat-history'
 def get_mongo_uri() -> str:
     remote_uri = os.getenv('MONGO_URI_MONGO_CLOUD')
     if remote_uri:
@@ -27,12 +30,10 @@ def get_mongo_uri() -> str:
         return os.getenv('MONGO_URI_LOCAL')
 
 
-def get_mongo_database_name():
-    return os.getenv('MONGODB_DATABASE_NAME')
 
 
 def get_mongo_chat_history_collection_name():
-    return os.getenv('MONGODB_CHAT_HISTORY_COLLECTION_NAME')
+    return os.getenv('MONGODB_HISTORY_COLLECTION_NAME')
 
 
 TEST_MONGO_QUERY = {"student_id": "test_student",
@@ -55,7 +56,7 @@ def default_serialize(o: Any) -> str:
 class MongoDatabaseManager:
     def __init__(self, ):
         self._client = AsyncIOMotorClient(get_mongo_uri())
-        self._database = self._client.get_default_database(get_mongo_database_name())
+        self._database = self._client.get_default_database(MONGODB_DATABASE_NAME)
 
 
     def get_collection(self, collection_name: str):

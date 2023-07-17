@@ -1,9 +1,8 @@
 import os
 
 import pandas as pd
-from dotenv import load_dotenv
-
 from chatbot.mongo_database.mongo_database_manager import MongoDatabaseManager
+from dotenv import load_dotenv
 
 if __name__ == '__main__':
     mongo_database = MongoDatabaseManager()

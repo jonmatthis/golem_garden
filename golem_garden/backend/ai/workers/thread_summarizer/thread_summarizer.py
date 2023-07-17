@@ -8,7 +8,6 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain.chat_models import ChatAnthropic
 from langchain.schema import Document
 
-
 # os.environ["LANGCHAIN_TRACING"] = "true"
 
 logging.basicConfig(level=logging.INFO)

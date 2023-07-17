@@ -8,6 +8,8 @@ BASE_DATA_FOLDER_NAME = "chatbot_data"
 
 LOG_FILE_FOLDER_NAME = "logs"
 
+
+
 STUDENT_PROFILES_COLLECTION_NAME = "student_profiles"
 STUDENT_SUMMARIES_COLLECTION_NAME = "student_summaries"
 STUDENT_STATISTICS_COLLECTION_NAME = "student_statistics"
@@ -69,3 +71,7 @@ def get_thread_backups_collection_name(server_name: str=None, channel_name: str 
         return f"{channel_name}_threads"
 
     return f"thread_backups_for_{server_name}"
+
+
+def get_chroma_vector_store_path()->str:
+    return str(Path(get_base_data_folder_path()) / "chroma_vectors")

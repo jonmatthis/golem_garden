@@ -1,15 +1,14 @@
 
 
-from typing import List, Dict, Callable
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import (
-    AIMessage,
-    HumanMessage,
-    SystemMessage,
-    BaseMessage,
-)
+from typing import List, Callable
 
 from dotenv import load_dotenv
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import (
+    HumanMessage,
+    SystemMessage,
+)
+
 load_dotenv()
 class DialogueAgent():
 

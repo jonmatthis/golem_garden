@@ -4,14 +4,13 @@ import random
 from pathlib import Path
 from typing import Union
 
+from chatbot.ai.workers.green_check_handler.grab_green_check_messages import grab_green_check_messages
+from chatbot.mongo_database.mongo_database_manager import MongoDatabaseManager
 from dotenv import load_dotenv
 from langchain import PromptTemplate, OpenAI
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
-
-from chatbot.ai.workers.green_check_handler.grab_green_check_messages import grab_green_check_messages
-from chatbot.mongo_database.mongo_database_manager import MongoDatabaseManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

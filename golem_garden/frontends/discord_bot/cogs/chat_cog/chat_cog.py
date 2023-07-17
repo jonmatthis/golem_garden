@@ -3,8 +3,6 @@ import uuid
 from datetime import datetime
 
 import discord
-
-
 from pydantic import BaseModel
 
 from golem_garden.backend.ai.chatbot.chatbot import Chatbot

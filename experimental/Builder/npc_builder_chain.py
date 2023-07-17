@@ -3,7 +3,9 @@
 # TODO: get agents to comprehend their own name in the chat history transcript
 
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import toml

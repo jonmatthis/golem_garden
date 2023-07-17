@@ -1,11 +1,7 @@
-from datetime import datetime
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.memory import VectorStoreRetrieverMemory
-
 import faiss
-
 from langchain.docstore import InMemoryDocstore
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.memory import VectorStoreRetrieverMemory
 from langchain.vectorstores import FAISS
 
 

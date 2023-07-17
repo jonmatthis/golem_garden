@@ -1,17 +1,13 @@
 import asyncio
-import os
-from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.llms.base import LLM
-from langchain.schema import Document
 from langchain.vectorstores import Chroma
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel
 
 from golem_garden.backend.ai.chatbot.chatbot_prompts import CHATBOT_SYSTEM_PROMPT_TEMPLATE
-from golem_garden.backend.mongo_database.mongo_database_manager import MongoDatabaseManager
+from system.filenames_and_paths import get_chroma_vector_store_path
 
 load_dotenv()
 from langchain import LLMChain, OpenAI
@@ -110,13 +106,13 @@ class Chatbot(BaseModel):
         chroma_vector_store = Chroma(
             embedding_function=OpenAIEmbeddings(),
             collection_name=collection_name,
-            persist_directory=str(Path(os.getenv("PATH_TO_CHROMA_PERSISTENCE_FOLDER")) / collection_name),
+            persist_directory=str(get_chroma_vector_store_path()),
         )
         return chroma_vector_store
 
 
     async def demo(self):
-        print("Welcome to the Neural Control Assistant demo!")
+        print("Welcome to the ChatBot demo!")
         print("Type 'exit' to end the demo.\n")
 
         while True:

@@ -7,8 +7,6 @@
   # this agent is also fake, so that needs some adjustment
   # but also, it seemed like
 
-from typing import List, Tuple, Union, Any
-
 from dotenv import load_dotenv
 from langchain.memory.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 
@@ -20,15 +18,8 @@ from langchain.chat_models import ChatOpenAI
 
 from langchain import ConversationChain
 
-from langchain.agents import AgentType, AgentExecutor, BaseMultiActionAgent, BaseSingleActionAgent
-from langchain.agents import initialize_agent
-
 from langchain.agents import Tool
-from langchain.tools.file_management.write import WriteFileTool
-from langchain.tools.file_management.read import ReadFileTool
 from langchain.tools import DuckDuckGoSearchRun
-
-from langchain.schema import AgentAction, AgentFinish
 
 from langchain.memory import ConversationEntityMemory, ConversationBufferMemory
 
