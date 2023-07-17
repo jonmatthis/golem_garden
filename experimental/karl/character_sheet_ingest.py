@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain.output_parsers import PydanticOutputParser, OutputFixingParser
@@ -11,19 +12,20 @@ llm = ChatOpenAI(temperature=1, model_name="gpt-4")
 
 parser = PydanticOutputParser(pydantic_object=DnDCharacter)
 prompt = PromptTemplate(
-    input_variables = ["character_info"],
-    template = "retrieve character information from: {character_info}\nformat like this:{format_instructions}",
+    input_variables=["character_info"],
+    template="retrieve character information from: {character_info}\nformat like this:{format_instructions}",
     partial_variables={"format_instructions": parser.get_format_instructions()}
 )
 chain = LLMChain(llm=llm, prompt=prompt)
-fixing_parser = OutputFixingParser.from_llm(llm = llm, parser = parser)
+fixing_parser = OutputFixingParser.from_llm(llm=llm, parser=parser)
+
 
 def format_character_sheet(character_sheet: str) -> DnDCharacter:
-
     result = chain.run(character_info=character_sheet)
     result = fixing_parser.parse(result)
-    
+
     return result
+
 
 def main():
     character_sheet = '''
@@ -41,10 +43,9 @@ def main():
     '''
 
     result = format_character_sheet(character_sheet)
-    
+
     print(result)
-    
-    
+
 
 if __name__ == '__main__':
     main()

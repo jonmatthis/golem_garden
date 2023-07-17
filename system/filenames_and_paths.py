@@ -8,8 +8,6 @@ BASE_DATA_FOLDER_NAME = "chatbot_data"
 
 LOG_FILE_FOLDER_NAME = "logs"
 
-
-
 STUDENT_PROFILES_COLLECTION_NAME = "student_profiles"
 STUDENT_SUMMARIES_COLLECTION_NAME = "student_summaries"
 STUDENT_STATISTICS_COLLECTION_NAME = "student_statistics"
@@ -44,8 +42,11 @@ def create_log_file_name():
 def get_current_date_time_string():
     return datetime.now().isoformat().replace(":", "_").replace(".", "_")
 
+
 def clean_path_string(filename: str):
     return filename.replace(":", "_").replace(".", "_").replace(" ", "_")
+
+
 def get_default_database_json_save_path(filename: str,
                                         timestamp: bool = False):
     if filename.endswith(".json"):
@@ -61,7 +62,7 @@ def get_default_database_json_save_path(filename: str,
     return str(save_path)
 
 
-def get_thread_backups_collection_name(server_name: str=None, channel_name: str = None):
+def get_thread_backups_collection_name(server_name: str = None, channel_name: str = None):
     if server_name is None:
         server_name = "Neural Control of Real World Human Movement 2023 Summer1"
     server_name = server_name.replace(" ", "_")
@@ -73,5 +74,5 @@ def get_thread_backups_collection_name(server_name: str=None, channel_name: str 
     return f"thread_backups_for_{server_name}"
 
 
-def get_chroma_vector_store_path()->str:
+def get_chroma_vector_store_path() -> str:
     return str(Path(get_base_data_folder_path()) / "chroma_vectors")

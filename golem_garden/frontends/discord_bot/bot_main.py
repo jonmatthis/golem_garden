@@ -14,12 +14,10 @@ configure_logging(entry_point="discord")
 
 load_dotenv()
 
-
-
 logger = logging.getLogger(__name__)
 
 
-async def main():
+async def bot_main():
     mongo_database_manager = MongoDatabaseManager()
     discord_bot = DiscordBot(mongo_database=mongo_database_manager)
 
@@ -29,10 +27,9 @@ async def main():
     discord_bot.add_cog(ThreadScraperCog(bot=discord_bot,
                                          mongo_database_manager=mongo_database_manager))
 
-
     await discord_bot.start(os.getenv("DISCORD_TOKEN"))
 
 
 if __name__ == "__main__":
     logger.info("Starting bot...")
-    asyncio.run(main())
+    asyncio.run(bot_main())

@@ -22,10 +22,10 @@ from langchain.prompts import (
 
 class Chatbot(BaseModel):
     llm: ChatOpenAI = ChatOpenAI(
-            streaming=True,
-            callbacks=[StreamingStdOutCallbackHandler()],
-            temperature=0.8,
-            model_name="gpt-4")
+        streaming=True,
+        callbacks=[StreamingStdOutCallbackHandler()],
+        temperature=0.8,
+        model_name="gpt-4")
     prompt: Any = None
     memory: Any = None
     chain: Any = None
@@ -53,8 +53,7 @@ class Chatbot(BaseModel):
 
         return VectorStoreRetrieverMemory(retriever=retriever,
                                           memory_key="vectorstore_memory",
-                                          input_key="human_input",)
-
+                                          input_key="human_input", )
 
     @staticmethod
     def _configure_conversation_memory():
@@ -92,24 +91,22 @@ class Chatbot(BaseModel):
         ai_response = await self.chain.arun(human_input=input_text)
         return ai_response
 
-
     async def load_memory_from_thread(self, thread, bot_name: str):
         async for message in thread.history(limit=None, oldest_first=True):
             if message.content == "":
                 continue
             if str(message.author) == bot_name:
-                self._memory.chat_memory.add_ai_message(message.content)
+                self.memory.chat_memory.add_ai_message(message.content)
             else:
-                self._memory.chat_memory.add_user_message(message.content)
+                self.memory.chat_memory.add_user_message(message.content)
 
-    async def _create_vector_store(self, collection_name:str="test_collection"):
+    async def _create_vector_store(self, collection_name: str = "test_collection"):
         chroma_vector_store = Chroma(
             embedding_function=OpenAIEmbeddings(),
             collection_name=collection_name,
             persist_directory=str(get_chroma_vector_store_path()),
         )
         return chroma_vector_store
-
 
     async def demo(self):
         print("Welcome to the ChatBot demo!")
@@ -125,6 +122,7 @@ class Chatbot(BaseModel):
             response = await self.async_process_input(input_text)
 
             print("\n")
+
 
 if __name__ == "__main__":
     async def main():

@@ -17,4 +17,3 @@ if __name__ == '__main__':
             {'student_username': student_username},
             {'$set': {'student_email': username_email_dict[student_username]}}
         )
-

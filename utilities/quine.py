@@ -34,7 +34,8 @@ class Quine:
         The source code is enclosed in ```python ``` code blocks.
     """
 
-    def __init__(self, base_directory: str, excluded_directories: List[str], included_extensions: List[str], excluded_file_names: List[str]):
+    def __init__(self, base_directory: str, excluded_directories: List[str], included_extensions: List[str],
+                 excluded_file_names: List[str]):
         self.base_directory = base_directory
         self.excluded_directories = excluded_directories
         self.included_extensions = included_extensions
@@ -86,7 +87,6 @@ class Quine:
 
 
 if __name__ == "__main__":
-
     base_directory_in = r"C:\Users\jonma\github_repos\jonmatthis\chatbot\chatbot\student_info\student_profiles"
     quine = Quine(
         base_directory=base_directory_in,
@@ -95,6 +95,6 @@ if __name__ == "__main__":
 
                               ],
         included_extensions=[".py", ".html", ".js", ".css", ".md", ".json", ".csv", ".txt"],
-        excluded_file_names=["__init__.py", "video_chatter_summary_builder_prompts.py" ],
+        excluded_file_names=["__init__.py", "video_chatter_summary_builder_prompts.py"],
     )
     quine.generate_quine()

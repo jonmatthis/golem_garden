@@ -40,4 +40,3 @@ def redact_introduction(message):
             message.content = re.sub(pattern, r'\1 REDACTED', message.content, flags=re.IGNORECASE)
 
     return message
-

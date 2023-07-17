@@ -1,5 +1,3 @@
-
-
 from typing import List, Callable
 
 from dotenv import load_dotenv
@@ -10,6 +8,8 @@ from langchain.schema import (
 )
 
 load_dotenv()
+
+
 class DialogueAgent():
 
     def __init__(
@@ -84,8 +84,7 @@ class DialogueSimulator():
 character_names = ["Harry Potter", "Ron Weasley", "Hermione Granger", "Argus Filch"]
 storyteller_name = "Dungeon Master"
 quest = "Find all of Lord Voldemort's seven horcruxes."
-word_limit = 50 # word limit for task brainstorming
-
+word_limit = 50  # word limit for task brainstorming
 
 game_description = f"""Here is the topic for a Dungeons & Dragons game: {quest}.
         The characters are: {*character_names,}.
@@ -94,22 +93,24 @@ game_description = f"""Here is the topic for a Dungeons & Dragons game: {quest}.
 player_descriptor_system_message = SystemMessage(
     content="You can add detail to the description of a Dungeons & Dragons player.")
 
+
 def generate_character_description(character_name):
     character_specifier_prompt = [
         player_descriptor_system_message,
         HumanMessage(content=
-            f"""{game_description}
+                     f"""{game_description}
             Please reply with a creative description of the character, {character_name}, in {word_limit} words or less. 
             Speak directly to {character_name}.
             Do not add anything else."""
-            )
+                     )
     ]
     character_description = ChatOpenAI(temperature=1.0)(character_specifier_prompt).content
     return character_description
 
+
 def generate_character_system_message(character_name, character_description):
     return SystemMessage(content=(
-    f"""{game_description}
+        f"""{game_description}
     Your name is {character_name}. 
     Your character description is as follows: {character_description}.
     You will propose actions you plan to take and {storyteller_name} will explain what happens when you take those actions.
@@ -124,22 +125,24 @@ def generate_character_system_message(character_name, character_description):
     """
     ))
 
+
 character_descriptions = [generate_character_description(character_name) for character_name in character_names]
-character_system_messages = [generate_character_system_message(character_name, character_description) for character_name, character_description in zip(character_names, character_descriptions)]
+character_system_messages = [generate_character_system_message(character_name, character_description) for
+                             character_name, character_description in zip(character_names, character_descriptions)]
 
 storyteller_specifier_prompt = [
     player_descriptor_system_message,
     HumanMessage(content=
-        f"""{game_description}
+                 f"""{game_description}
         Please reply with a creative description of the storyteller, {storyteller_name}, in {word_limit} words or less. 
         Speak directly to {storyteller_name}.
         Do not add anything else."""
-        )
+                 )
 ]
 storyteller_description = ChatOpenAI(temperature=1.0)(storyteller_specifier_prompt).content
 
 storyteller_system_message = SystemMessage(content=(
-f"""{game_description}
+    f"""{game_description}
 You are the storyteller, {storyteller_name}. 
 Your description is as follows: {storyteller_description}.
 The other players will propose actions to take and you will explain what happens when they take those actions.
@@ -152,7 +155,6 @@ Never forget to keep your response to {word_limit} words!
 Do not add anything else.
 """
 ))
-
 
 print('Storyteller Description:')
 print(storyteller_description)
@@ -184,8 +186,8 @@ for character_name, character_system_message in zip(character_names, character_s
         system_message=character_system_message,
         model=ChatOpenAI(temperature=0.2)))
 storyteller = DialogueAgent(name=storyteller_name,
-                     system_message=storyteller_system_message,
-                     model=ChatOpenAI(temperature=0.2))
+                            system_message=storyteller_system_message,
+                            model=ChatOpenAI(temperature=0.2))
 
 
 def select_next_speaker(step: int, agents: List[DialogueAgent]) -> int:
@@ -224,5 +226,3 @@ while n < max_iters:
     print(f"({name}): {message}")
     print('\n')
     n += 1
-
-

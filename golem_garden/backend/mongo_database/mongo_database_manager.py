@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 MONGODB_DATABASE_NAME = 'golem_garden'
 MONGODB_HISTORY_COLLECTION_NAME = 'chat-history'
+
+
 def get_mongo_uri() -> str:
     remote_uri = os.getenv('MONGO_URI_MONGO_CLOUD')
     if remote_uri:
@@ -28,8 +30,6 @@ def get_mongo_uri() -> str:
         return os.getenv('MONGO_URI_DOCKER')
     else:
         return os.getenv('MONGO_URI_LOCAL')
-
-
 
 
 def get_mongo_chat_history_collection_name():
@@ -53,17 +53,18 @@ def default_serialize(o: Any) -> str:
         return o.__dict__
     return str(o)
 
+
 class MongoDatabaseManager:
     def __init__(self, ):
         self._client = AsyncIOMotorClient(get_mongo_uri())
         self._database = self._client.get_default_database(MONGODB_DATABASE_NAME)
-
 
     def get_collection(self, collection_name: str):
         return self._database[collection_name]
 
     def get_collection_as_dict(self, collection_name: str):
         return self._database[collection_name].find().to_dict()
+
     async def insert(self, collection, document):
         return await self._database[collection].insert_one(document)
 
@@ -71,9 +72,9 @@ class MongoDatabaseManager:
         return await self._database[collection].update_one(query, data, upsert=True)
 
     async def save_json(self,
-                  collection_name: str,
-                  query: dict = None,
-                  save_path: Union[str, Path] = None):
+                        collection_name: str,
+                        query: dict = None,
+                        save_path: Union[str, Path] = None):
         try:
             query = query if query is not None else defaultdict()
             collection = self._database[collection_name]
@@ -84,9 +85,8 @@ class MongoDatabaseManager:
                 file_name = clean_path_string(file_name)
                 save_path = Path(save_path).parent / file_name
             else:
-                save_path =  get_default_database_json_save_path(filename=collection_name,
-                                                    timestamp=True)
-
+                save_path = get_default_database_json_save_path(filename=collection_name,
+                                                                timestamp=True)
 
             data = [doc async for doc in collection.find(query)]
 
@@ -110,9 +110,9 @@ class MongoDatabaseManager:
         self._client.close()
 
 
-
 if __name__ == "__main__":
     import asyncio
+
     # Replace 'your_mongodb_uri' with your actual MongoDB URI
     mongodb_manager = MongoDatabaseManager()  # run locally
 
@@ -121,6 +121,7 @@ if __name__ == "__main__":
         'description': 'This is a test document',
         'timestamp': datetime.now().isoformat(),
     }
+
 
     async def main():
         # Insert the test document into a 'test' collection
@@ -133,5 +134,6 @@ if __name__ == "__main__":
         print("Documents in 'test' collection:")
         for document in find_result:
             print(document)
+
 
     asyncio.run(main())

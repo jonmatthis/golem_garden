@@ -1,5 +1,5 @@
 - Intermediary toml format to spin up golems
-  - may need a parser script (factory?) that's aware of things like which tools are available, etc
-  - goal is a clean, human-readable toml that makes this data-driven. new visualizations can emerge from there. 
-- Code and markdown snipping / saving tools. 
+    - may need a parser script (factory?) that's aware of things like which tools are available, etc
+    - goal is a clean, human-readable toml that makes this data-driven. new visualizations can emerge from there.
+- Code and markdown snipping / saving tools.
 - new tool for basic File I/O (unless already exists)

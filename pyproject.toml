@@ -5,7 +5,7 @@ description = "words in the heart cannot be taken 🌱"
 authors = ["jonmatthis <jonmatthis@gmail.com>"]
 license = "AGPLv3+"
 readme = "README.md"
-packages = [{include = "golem_garden"}]
+packages = [{ include = "golem_garden" }]
 
 [project.urls]
 Homepage = "https://github.com/jonmatthis/golem_garden"

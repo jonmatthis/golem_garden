@@ -24,7 +24,6 @@ class ThreadScraperCog(commands.Cog):
         self.bot = bot
         self.mongo_database_manager = mongo_database_manager
 
-
     @discord.slash_command(name='scrape_threads', description='(ADMIN ONLY) Scrape all threads in the current server')
     @discord.option(name="timestamp_backup",
                     description="Whether or not add a timestamp to the backup filename",
@@ -78,7 +77,6 @@ class ThreadScraperCog(commands.Cog):
                 status_message = await self.send_status_message_update(ctx, saving_thread_string, status_message)
 
                 thread_owner_username = thread.name.split("'")[0]
-
 
                 mongo_query = {
                     "_student_name": student_name,

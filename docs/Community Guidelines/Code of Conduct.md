@@ -1,16 +1,17 @@
 # Code of Conduct
 
-
-
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make
+participation in our project and our community a harassment-free experience for everyone, regardless of age, body size,
+disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race,
+religion, or sexual identity and orientation.
 
 ## Our Standards
 
 Examples of behavior that contributes to creating a positive environment include:
 
-* Using welcoming and inclusive language 
+* Using welcoming and inclusive language
 * avoid making "male by default" assumptions (e.g. saying "alright boys" when addressing a group of people)
-* Being respectful of differing viewpoints,  experiences, and backgrounds
+* Being respectful of differing viewpoints, experiences, and backgrounds
 * Gracefully accepting constructive criticism
 * Focusing on what is best for the community
 * Showing empathy towards other community members
@@ -25,6 +26,8 @@ Examples of unacceptable behavior by participants include:
 
 ## Conflict Resolution
 
-If conflicts arise within the community, we encourage participants to resolve them through respectful dialogue. If necessary, contact us at info at freemocap dot org and we will do our best to facilitate resolution by providing guidance and mediation.
+If conflicts arise within the community, we encourage participants to resolve them through respectful dialogue. If
+necessary, contact us at info at freemocap dot org and we will do our best to facilitate resolution by providing
+guidance and mediation.
 
 

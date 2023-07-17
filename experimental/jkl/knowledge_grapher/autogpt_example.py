@@ -12,14 +12,13 @@ from langchain.tools.file_management.read import ReadFileTool
 search = SerpAPIWrapper()
 tools = [
     Tool(
-        name = "search",
+        name="search",
         func=search.run,
         description="useful for when you need to answer questions about current events. You should ask targeted questions"
     ),
     WriteFileTool(),
     ReadFileTool(),
 ]
-
 
 ## Memory
 
@@ -35,7 +34,6 @@ import faiss
 embedding_size = 1536
 index = faiss.IndexFlatL2(embedding_size)
 vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {})
-
 
 ## Model and AutoGPT
 
@@ -57,4 +55,4 @@ agent.run([
 Write a markdown-based document synthesizing, summarizing, and outlining the 
 last 24 hours in Large Language Model (LLM) news. Look for high-quality sources, not just hot trends.
     """
-           ])
+])

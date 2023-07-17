@@ -17,6 +17,7 @@ TIME_PASSED_MESSAGE = """
 
 logger = logging.getLogger(__name__)
 
+
 class Chat(BaseModel):
     title: str
     thread: discord.Thread
@@ -27,6 +28,7 @@ class Chat(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
 
 class ChatCog(discord.Cog):
     def __init__(self,
@@ -51,8 +53,6 @@ class ChatCog(discord.Cog):
                    ctx: discord.ApplicationContext,
                    use_project_manager_prompt: bool = False,
                    initial_text_input: str = None):
-
-
 
         student_user_name = str(ctx.user)
         if use_project_manager_prompt:
@@ -106,7 +106,6 @@ class ChatCog(discord.Cog):
         # Make sure we won't be replying to ourselves.
         if message.author.id == self._discord_bot.user.id:
             return
-
 
         # Only respond to messages in threads
         if not message.channel.__class__ == discord.Thread:

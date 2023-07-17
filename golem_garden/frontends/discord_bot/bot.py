@@ -6,6 +6,7 @@ from golem_garden.backend.mongo_database.mongo_database_manager import MongoData
 
 logger = logging.getLogger(__name__)
 
+
 class DiscordBot(discord.Bot):
     def __init__(self,
                  mongo_database: MongoDatabaseManager):
@@ -24,7 +25,7 @@ class DiscordBot(discord.Bot):
         if message.guild is None:
             server_name = 'DM-with-' + str(message.author)
             channel_name = 'DM-with-' + str(message.author)
-            collection_name  = "dm_messages"
+            collection_name = "dm_messages"
         else:
             server_name = message.guild.name
             channel_name = message.channel.name

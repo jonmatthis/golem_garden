@@ -11,6 +11,7 @@ class AbilityScores(BaseModel):
     wisdom: int
     charisma: int
 
+
 class DnDCharacter(BaseModel):
     name: str
     race: str
