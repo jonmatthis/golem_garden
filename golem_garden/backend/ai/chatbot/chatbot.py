@@ -2,6 +2,7 @@ import asyncio
 from typing import Any
 
 from dotenv import load_dotenv
+from langchain.callbacks.base import BaseCallbackHandler
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from pydantic import BaseModel
@@ -30,6 +31,7 @@ class Chatbot(BaseModel):
     memory: Any = None
     chain: Any = None
 
+
     async def create_chatbot(self):
         if self.prompt is None:
             self.prompt = self._create_prompt(prompt_template=CHATBOT_SYSTEM_PROMPT_TEMPLATE)
@@ -38,6 +40,9 @@ class Chatbot(BaseModel):
         if self.chain is None:
             self.chain = self._create_llm_chain()
         return self
+
+    def add_callback(self, callback: BaseCallbackHandler):
+        self.llm.callbacks.append(callback)
 
     async def _configure_memory(self):
         conversation_memory = self._configure_conversation_memory()
@@ -49,7 +54,7 @@ class Chatbot(BaseModel):
     async def _configure_vectorstore_memory(self, ):
         chroma_vector_store = await self._create_vector_store()
 
-        retriever = chroma_vector_store.as_retriever(search_kwargs=dict(k=3))
+        retriever = chroma_vector_store.as_retriever(search_kwargs=dict(k=1))
 
         return VectorStoreRetrieverMemory(retriever=retriever,
                                           memory_key="vectorstore_memory",
