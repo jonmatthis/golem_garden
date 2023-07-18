@@ -2,11 +2,14 @@ import logging
 from datetime import datetime
 
 import discord
+from langchain.callbacks.base import BaseCallbackHandler, AsyncCallbackHandler
 
 from golem_garden.backend.ai.chatbot.chatbot import Chatbot
+
 from golem_garden.backend.mongo_database.mongo_database_manager import MongoDatabaseManager
 from golem_garden.frontends.discord_bot.data_models.thread_chat_model import ThreadChat
-from system.environment_variables import get_admin_users
+import asyncio
+import time
 
 TIME_PASSED_MESSAGE = """
 > Some time passed and your memory of this conversation reset needed to be reloaded from the thread, but we're good now!
@@ -15,6 +18,53 @@ TIME_PASSED_MESSAGE = """
 """
 
 logger = logging.getLogger(__name__)
+
+class StreamMessageHandler(AsyncCallbackHandler):
+    def __init__(self, event_loop):
+        super().__init__()
+        self._event_loop = event_loop
+        self._current_message = None
+        self.message_content = ""
+        self.token_queue = asyncio.Queue()
+        self.batch_size = 10
+        self.batch_time = 1.0  # seconds
+        self.last_batch_time = time.time()
+
+    @property
+    def current_message(self):
+        return self._current_message
+
+    @current_message.setter
+    def current_message(self, message:discord.Message):
+        self.message_content = ""
+        self._current_message = message
+
+    async def on_llm_new_token(self, token: str, **kwargs) -> None:
+        if self.current_message:
+            await self.token_queue.put(token)
+
+    async def _run(self):
+        while True:
+            tokens = []
+            start_time = time.time()
+            while len(tokens) < self.batch_size and time.time() - start_time < self.batch_time:
+                try:
+                    token = await asyncio.wait_for(self.token_queue.get(), timeout=1)
+                    tokens.append(token)
+                except asyncio.TimeoutError:
+                    continue
+
+            if tokens:
+                self.message_content += ''.join(tokens)
+                if self.current_message and len(self.message_content) > 0:
+                    await self.current_message.edit(content=self.message_content)
+
+    def start(self):
+        self.task = asyncio.ensure_future(self._run())
+
+    def stop(self):
+        self.task.cancel()
+
 
 
 class ChatCog(discord.Cog):
@@ -25,7 +75,8 @@ class ChatCog(discord.Cog):
         self._mongo_database = mongo_database_manager
         self._active_threads = {}
         self._course_assistant_llm_chains = {}
-
+        self.response_message = None
+        self.stream_message_callback = StreamMessageHandler(asyncio.get_event_loop())
     @discord.slash_command(name="chat", description="Chat with the bot")
     @discord.option(name="initial_message",
                     description="The initial message to send to the bot",
@@ -78,18 +129,26 @@ class ChatCog(discord.Cog):
 
         await self._async_send_message_to_bot(chat=chat, input_text=message.content)
 
-    async def _async_send_message_to_bot(self, chat: ThreadChat, input_text: str):
-        response_message = await chat.thread.send("`Awaiting bot response...`")
-        try:
 
-            async with response_message.channel.typing():
+    async def _async_send_message_to_bot(self, chat: ThreadChat, input_text: str):
+        self.response_message = await chat.thread.send("Awaiting bot response")
+        self.stream_message_callback.current_message = self.response_message
+        self.stream_message_callback.start()
+
+        try:
+            async with self.response_message.channel.typing():
                 bot_response = await chat.assistant.async_process_input(input_text=input_text)
 
-            await response_message.edit(content=bot_response)
+            await self.response_message.edit(content=bot_response)
 
         except Exception as e:
             logger.error(e)
-            await response_message.edit(content=f"Whoops! Something went wrong! 😅 \nHere is the error:\n ```\n{e}\n```")
+            await self.response_message.edit(content=f"Whoops! Something went wrong! 😅 \nHere is the error:\n ```\n{e}\n```")
+
+        self.response_message = None
+        self.stream_message_callback.stop()
+        self.stream_message_callback.current_message = None
+
 
     def _create_chat_title_string(self, user_name: str, task_type: str = None) -> str:
         if task_type is None:
@@ -128,6 +187,7 @@ class ChatCog(discord.Cog):
             return self._active_threads[thread.id]
 
         assistant = await self._get_assistant(thread)
+        assistant.add_callback(self.stream_message_callback)
 
         chat = ThreadChat(
             title=self._create_chat_title_string(user_name=user_id),
