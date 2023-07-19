@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  golem_garden:
+    build: .
+    environment:
+      - IS_DOCKER=1
+    depends_on:
+      - mongodb
+    restart: always
+
