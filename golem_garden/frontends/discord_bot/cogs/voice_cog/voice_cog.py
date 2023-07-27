@@ -62,4 +62,5 @@ class VoiceCog(commands.Cog):
         """
         logger.info(f"Voice state updated for member: {member.name}")
 
-
+        if before.channel is not None and after.channel is None:
+            del self.connections[member.guild.id]
