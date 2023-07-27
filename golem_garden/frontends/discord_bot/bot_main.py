@@ -8,6 +8,7 @@ from golem_garden.backend.mongo_database.mongo_database_manager import MongoData
 from golem_garden.frontends.discord_bot.bot import DiscordBot
 from golem_garden.frontends.discord_bot.cogs.chat_cog.chat_cog import ChatCog
 from golem_garden.frontends.discord_bot.cogs.thread_scraper_cog.thread_scraper_cog import ThreadScraperCog
+from golem_garden.frontends.discord_bot.cogs.voice_cog.voice_cog import VoiceCog
 from system.logging.configure_logging import configure_logging
 
 configure_logging(entry_point="discord")
@@ -26,6 +27,8 @@ async def bot_main():
 
     discord_bot.add_cog(ThreadScraperCog(bot=discord_bot,
                                          mongo_database_manager=mongo_database_manager))
+
+    discord_bot.add_cog(VoiceCog(bot=discord_bot))
 
     await discord_bot.start(os.getenv("DISCORD_TOKEN"))
 

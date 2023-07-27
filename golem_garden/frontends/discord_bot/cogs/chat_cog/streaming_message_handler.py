@@ -27,20 +27,23 @@ class StreamMessageHandler(AsyncCallbackHandler):
 
     async def on_llm_new_token(self, token: str, **kwargs) -> None:
         if self.current_message:
-            await self.token_queue.put(token)
+            await self.token_queue.put({'token': token,
+                                        'timestamp': time.perf_counter_ns()})
 
     async def _run(self):
         while True:
-            tokens = []
+            token_payloads = []
             start_time = time.time()
-            while len(tokens) < self.batch_size and time.time() - start_time < self.batch_time:
+            while len(token_payloads) < self.batch_size and time.time() - start_time < self.batch_time:
                 try:
-                    token = await asyncio.wait_for(self.token_queue.get(), timeout=1)
-                    tokens.append(token)
+                    token_payload = await asyncio.wait_for(self.token_queue.get(), timeout=1)
+                    token_payloads.append(token_payload)
                 except asyncio.TimeoutError:
                     continue
 
-            if tokens:
+            if token_payloads:
+                tokens = [token_payload['token'] for token_payload in token_payloads]
+                timestamps = [token_payload['timestamp'] for token_payload in token_payloads]
                 self.message_content += ''.join(tokens)
                 if self.current_message and len(self.message_content) > 0:
                     await self.current_message.edit(content=self.message_content)

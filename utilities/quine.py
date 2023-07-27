@@ -56,7 +56,7 @@ class Quine:
         """
         output_file.write(f"## {file_name}\n\n")
         output_file.write("```python\n")
-        with open(os.path.join(root_directory, file_name), "r") as file:
+        with open(os.path.join(root_directory, file_name), "r", encoding="utf-8") as file:
             file_content = file.read()
             output_file.write(file_content)
             print(file_content)  # Print the file content to the terminal
@@ -73,7 +73,7 @@ class Quine:
         output_dir = Path().cwd() / "output"  # Output directory
         output_dir.mkdir(parents=True, exist_ok=True)  # Create the output directory if it doesn't exist
         file_path = output_dir / file_name  # Output file path
-        with open(file_path, "w") as output_file:
+        with open(file_path, "w", encoding="utf-8") as output_file:
 
             for root_directory, directories, files in os.walk(self.base_directory):
                 directories[:] = [directory for directory in directories if directory not in self.excluded_directories]
@@ -87,12 +87,12 @@ class Quine:
 
 
 if __name__ == "__main__":
-    base_directory_in = r"C:\Users\jonma\github_repos\jonmatthis\chatbot\chatbot\student_info\student_profiles"
+    base_directory_in = r"C:\Users\jonma\github_repos\jonmatthis\golem_garden\golem_garden\frontends\discord_bot"
     quine = Quine(
         base_directory=base_directory_in,
         excluded_directories=["__pycache__",
                               ".git",
-
+                              "thread_scraper_cog"
                               ],
         included_extensions=[".py", ".html", ".js", ".css", ".md", ".json", ".csv", ".txt"],
         excluded_file_names=["__init__.py", "video_chatter_summary_builder_prompts.py"],
